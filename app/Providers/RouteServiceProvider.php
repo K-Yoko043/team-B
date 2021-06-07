@@ -26,6 +26,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::pattern('item', '[0-9]+');
         Route::pattern('product', '[0-9]+');
         Route::pattern('employee', '[0-9]+');
+        Route::pattern('goriller', '[0-9]+');
         Route::pattern('factory', '[0-9]+');
         Route::pattern('department', '[0-9]+');
         Route::pattern('interruption', '[0-9]+');

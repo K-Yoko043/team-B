@@ -47,7 +47,27 @@
                                 <td class="text-center align-middle">298</td>
                             </tr>
                         </tbody>
+
+                        <br>
+                        <center>* * * * * * * * ↓ 配列をテーブル表示 * * * * * * * *</center>
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-primary text-white">商品コード</th>
+                                <th class="text-center bg-primary text-white">商品名</th>
+                                <th class="text-center bg-primary text-white">在庫数</th>
+                                <th class="text-center bg-primary text-white" style="width:7rem;">実在庫数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="inventory in inventories" :key="inventory.id">
+                                <td class="text-center align-middle">{{ inventory.item_code }}</td>
+                                <td class="text-center align-middle">{{ inventory.item_name }}</td>
+                                <td class="text-center align-middle">{{ inventory.stock_num }}</td>
+                                <td class="text-center align-middle">{{ inventory.real_stock_num }}</td>
+                            </tr>
+                        </tbody>
                     </table>
+
                 </div>
             </div>
         </div>

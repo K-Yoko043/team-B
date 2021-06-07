@@ -92,27 +92,27 @@ const router = new VueRouter({
         // 設定
         { name: 'setting', path: '/setting', component: require('./components/settings/Index.vue').default },
 
-        // 従業員
-        { name: 'employee', path: '/employee', component: require('./components/employees/Index.vue').default },
-        { name: 'employee.create', path: '/employee/create', component: require('./components/employees/CreateUpdate.vue').default },
-        { name: 'employee.show', path: '/employee/show/:employee_id', component: require('./components/employees/CreateUpdate.vue').default, props: true },
 
         // 商品
         { name: 'item', path: '/item', component: require('./components/items/Index.vue').default },
         { name: 'item.create', path: '/item/create', component: require('./components/items/CreateUpdate.vue').default, props: true },
         { name: 'item.show', path: '/item/show/:item_id', component: require('./components/items/CreateUpdate.vue').default, props: true },
 
+        // 顧客
+        { name: 'customer', path: '/customer', component: require('./components/customer/Index.vue').default },
+        { name: 'customer.create', path: '/customer/create', component: require('./components/customer/CreateUpdate.vue').default, props: true },
+        { name: 'customer.show', path: '/customer/show/:customer_id', component: require('./components/customer/CreateUpdate.vue').default, props: true },
+
+        // 従業員
+        { name: 'goriller', path: '/goriller', component: require('./components/gorillers/Index.vue').default },
+        { name: 'goriller.create', path: '/goriller/create', component: require('./components/gorillers/CreateUpdate.vue').default },
+        { name: 'goriller.show', path: '/goriller/show/:goriller_id', component: require('./components/gorillers/CreateUpdate.vue').default, props: true },
+
         // Lesson
         { name: 'lesson1', path: '/lesson1', component: require('./components/lessons/Lesson1.vue').default },
         { name: 'lesson2', path: '/lesson2', component: require('./components/lessons/Lesson2.vue').default },
         { name: 'lesson3', path: '/lesson3', component: require('./components/lessons/Lesson3.vue').default },
-        { name: 'lesson4', path: '/lesson4', component: require('./components/lessons/Lesson4.vue').default },
-        { name: 'lesson5', path: '/lesson5', component: require('./components/lessons/Lesson5.vue').default },
-        { name: 'lesson6', path: '/lesson6', component: require('./components/lessons/Lesson6.vue').default },
-        { name: 'lesson7', path: '/lesson7', component: require('./components/lessons/Lesson7.vue').default },
-        { name: 'lesson8', path: '/lesson8', component: require('./components/lessons/Lesson8.vue').default },
-        { name: 'lesson9', path: '/lesson9', component: require('./components/lessons/Lesson9.vue').default },
-        { name: 'lesson10', path: '/lesson10', component: require('./components/lessons/Lesson10.vue').default },
+
 
         // not found
         { path: '*', component: require('./components/commons/NotFoundComponent.vue').default },

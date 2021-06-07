@@ -19,7 +19,6 @@ class User extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'is_admin' => $this->is_admin,
-            'is_leader' => $this->is_leader,
             'employee_id' => isset($this->employee) ? $this->employee->id : null,
             'employee' => $this->employee ?: null,
         ];

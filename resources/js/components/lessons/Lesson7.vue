@@ -25,6 +25,26 @@
                     </div>
                     
                     // ここにデータを表示
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-primary text-white">商品コード</th>
+                                <th class="text-center bg-primary text-white">商品名</th>
+                                <th class="text-center bg-primary text-white">フリガナ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white" v-for="(result, index) in results" :key="index">
+                                <td class="text-center align-middle">{{result.code}}</td>
+                                <td class="text-center align-middle">{{result.name}}</td>
+                                <td class="text-center align-middle">{{result.phonetic_name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="app">
+                        <span>{{ results }}</span>
+                    </div>
+                    
 
                     <hr>
                     <div class="quesion-header">２．新規テーブル（customers）を作成してそのデータを画面に表示しましょう</div>
@@ -56,6 +76,34 @@
                     </div>
                     
                     // ここにデータを表示
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-primary text-white">顧客コード</th>
+                                <th class="text-center bg-primary text-white">顧客名</th>
+                                <th class="text-center bg-primary text-white">郵便番号</th>
+                                <th class="text-center bg-primary text-white">アドレス</th>
+                                <th class="text-center bg-primary text-white">電話番号</th>
+                                <th class="text-center bg-primary text-white">Fax</th>
+                                <th class="text-center bg-primary text-white">休業日</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white" v-for="(customer, index) in customers" :key="index">
+                                <td class="text-center align-middle">{{customer.code}}</td>
+                                <td class="text-center align-middle">{{customer.name}}</td>
+                                <td class="text-center align-middle">{{customer.postal_code}}</td>
+                                <td class="text-center align-middle">{{customer.address}}</td>
+                                <td class="text-center align-middle">{{customer.tel}}</td>
+                                <td class="text-center align-middle">{{customer.fax}}</td>
+                                <td class="text-center align-middle">{{customer.closing_day}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="app">
+                        <span>{{ customers }}</span>
+                    </div>
+
 
                 </div>
             </div>
@@ -73,6 +121,7 @@ export default {
         return {
             results: null,
             items: null,
+            customers: null
         }
     },
     mounted () {
@@ -90,8 +139,13 @@ export default {
             // routes/api.phpにルーティングを設定する
             // Route::get('lesson/selector', 'API\LessonController@index');
             // ↑これがControllerとの紐づけ定義
-            const {data} = await axios.get('/api/lesson/selector')
-            this.results = data
+            const data = await axios.get('/api/lesson/selector')
+            this.results = data.data
+            console.log(data.data)
+
+            const data2 = await axios.get('/api/customer')
+            this.customers = data2.data
+            //console.log(data2.data)
         },
         onBack() {
             this.$router.push({ name: 'home' })

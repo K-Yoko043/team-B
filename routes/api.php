@@ -49,6 +49,21 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('item/selector', 'API\ItemController@selector');
 
     Route::get('lesson/selector', 'API\LessonController@index');
-    ////
+
+    Route::get('customer', 'API\CustomerController@index');
+    Route::post('customer', 'API\CustomerController@store');
+    Route::get('customer/{customer}', 'API\CustomerController@show');
+    Route::put('customer/{customer}', 'API\CustomerController@update');
+    Route::delete('customer/{customer}', 'API\CustomerController@destroy');
+    Route::get('customer/selector', 'API\CustomerController@selector');
+    
+    // ゴリラー
+    Route::get('goriller', 'API\GorillerController@index');
+    Route::post('goriller', 'API\GorillerController@store');
+    Route::get('goriller/{goriller}', 'API\GorillerController@show');
+    Route::put('goriller/{goriller}', 'API\GorillerController@update');
+    Route::delete('goriller/{goriller}', 'API\GorillerController@destroy');
+    Route::get('goriller/selector', 'API\GorillerController@selector');
+    Route::get('goriller/full_name', 'API\GorillerController@fullname');
 
 });

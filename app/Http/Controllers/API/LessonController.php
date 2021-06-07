@@ -17,6 +17,8 @@ class LessonController extends Controller
     public function index()
     {
         //
+        $items = Item::all();
+        return SelectorResource::collection($items);
     }
 
     /**

@@ -25,6 +25,12 @@
                                 <input class="form-control" v-model="searchItemCode">
                             </div>
                         </div>
+                        <div class="d-flex mr-3">
+                            <div class="align-self-center">在庫数：</div>
+                            <div class="align-self-center">
+                                <input class="form-control" v-model="searchStockNum">
+                            </div>
+                        </div>
                     </div>
                     <table class="table table-sm" key="processes">
                         <thead>
@@ -72,6 +78,7 @@ export default {
                 { id: 5, item_code: 'ITEM0005', item_name: '商品００００５', stock_num: 500, real_stock_num: 311 },
             ],
             searchItemCode: '',
+            searchStockNum: '',
         }
     },
     mounted () {
@@ -82,7 +89,9 @@ export default {
     },
     computed: {
         filterInventories() {
-            return this.inventories
+            //this.element = this.inventories.filter(x => x.stock_num >= parseInt(this.searchStockNum));
+            const inventories = this.inventories.filter(x => x.stock_num >= this.searchStockNum);
+            return  inventories.filter(x => x.item_code.match(this.searchItemCode));
         }
     },
     methods: {

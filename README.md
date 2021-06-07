@@ -72,4 +72,4 @@ Laravel development server started: <http://127.0.0.1:8000>
 ---
 
 ## Lesson内容
-- https://hackmd.io/-qeYqI_BTuqD22wd1sDJOg?both
+- https://hackmd.io/-qeYqI_BTuqD22wd1sDJOg?both# team-B

@@ -17,6 +17,9 @@ class Selector extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'code' => $this->code,
+            'phonetic_name' => $this->phonetic_name,
+            'deleted_at' => $this->deleted_at
         ];
     }
 }

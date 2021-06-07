@@ -21,6 +21,10 @@
                         <div class="mr-4">
                             <button type="button" class="btn btn-primary" @click="onNext">Leeson8-1へ</button>
                         </div>
+                        <div class="mr-4">
+                            <input id="app" v-model="inputString">
+                            <button type="button" class="btn btn-primary" @click="onNext2">Leeson8-2へ</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -37,6 +41,7 @@ export default {
     data () {
         return {
             text: '',
+            inputString: ''
         }
     },
     mounted () {
@@ -51,6 +56,9 @@ export default {
     methods: {
         onNext() {
             this.$router.push({ name: 'lesson8-1' })
+        },
+        onNext2() {
+            this.$router.push({ name: 'lesson8-2', params: {arg: this.inputString} })
         },
         onBack() {
             this.$router.push({ name: 'home' })
