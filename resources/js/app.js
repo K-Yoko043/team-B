@@ -75,6 +75,8 @@ Vue.component('barcode-component', require('./components/commons/BarcodeComponen
 Vue.component('modal-employee-select', require('./components/commons/ModalEmployeeSelect.vue').default);
 Vue.component('select-name', require('./components/commons/SelectName.vue').default);
 Vue.component("number-input", require("./components/commons/NumberInput.vue").default);
+// Vue.component("img-upload", require("./components/profiles/Index.vue.vue").default);
+
 
 const router = new VueRouter({
     mode: 'history',
@@ -84,35 +86,27 @@ const router = new VueRouter({
         // mock
         // { name: 'mock', path: '/mock', component: require('./components/mocks/MockBarcode.vue').default },
 
-        // 包装ライン日報
-        { name: 'report', path: '/report', component: require('./components/reports/Index.vue').default },
-        { name: 'report.create', path: '/report/create', component: require('./components/reports/CreateUpdate.vue').default },
-        { name: 'report.show', path: '/report/show/:report_id', component: require('./components/reports/CreateUpdate.vue').default, props: true },
+        // プロフィール
+        { name: 'profile', path: '/profile', component: require('./components/profiles/Index.vue').default },
 
         // 設定
         { name: 'setting', path: '/setting', component: require('./components/settings/Index.vue').default },
-
-
-        // 商品
-        { name: 'item', path: '/item', component: require('./components/items/Index.vue').default },
-        { name: 'item.create', path: '/item/create', component: require('./components/items/CreateUpdate.vue').default, props: true },
-        { name: 'item.show', path: '/item/show/:item_id', component: require('./components/items/CreateUpdate.vue').default, props: true },
-
-        // 顧客
-        { name: 'customer', path: '/customer', component: require('./components/customer/Index.vue').default },
-        { name: 'customer.create', path: '/customer/create', component: require('./components/customer/CreateUpdate.vue').default, props: true },
-        { name: 'customer.show', path: '/customer/show/:customer_id', component: require('./components/customer/CreateUpdate.vue').default, props: true },
 
         // 従業員
         { name: 'goriller', path: '/goriller', component: require('./components/gorillers/Index.vue').default },
         { name: 'goriller.create', path: '/goriller/create', component: require('./components/gorillers/CreateUpdate.vue').default },
         { name: 'goriller.show', path: '/goriller/show/:goriller_id', component: require('./components/gorillers/CreateUpdate.vue').default, props: true },
 
-        // Lesson
-        { name: 'lesson1', path: '/lesson1', component: require('./components/lessons/Lesson1.vue').default },
-        { name: 'lesson2', path: '/lesson2', component: require('./components/lessons/Lesson2.vue').default },
-        { name: 'lesson3', path: '/lesson3', component: require('./components/lessons/Lesson3.vue').default },
-
+        // 投稿内容
+        { name: 'content', path: '/content', component: require('./components/contents/Index.vue').default},
+        { name: 'content.create', path: '/content/create', component: require('./components/contents/CreateUpdate.vue').default},
+        { 
+            name: 'content.resume',
+            path: '/content/resume/:contentId',
+            component: require('./components/contents/CreateUpdate.vue').default,
+            props: true,
+        },
+        
 
         // not found
         { path: '*', component: require('./components/commons/NotFoundComponent.vue').default },
