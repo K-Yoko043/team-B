@@ -18,6 +18,7 @@ class CreateGorillersTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable()->comment('ユーザ');
             $table->string('first_name')->nullable()->comment('名');
             $table->string('last_name')->nullable()->comment('姓');
+            $table->string('full_name')->nullable()->comment('名前');
             $table->unsignedinteger('position')->nullable();
             $table->softDeletes();
             $table->timestamps();

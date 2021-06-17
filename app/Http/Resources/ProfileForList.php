@@ -16,10 +16,8 @@ class ProfileForList extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'hobby' => $this->hobby,
-            'birthday' =>$this->birthday,
-            'image_file_name' => $this->image_file_name,
+            'path' => $this->path,
+            'goriller_id' => isset($this->goriller) ? $this->goriller->id : null,
         ];
     }
 }

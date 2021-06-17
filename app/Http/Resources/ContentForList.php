@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class ContentForList extends JsonResource
 {
@@ -16,9 +17,8 @@ class ContentForList extends JsonResource
     {
         return [
             'id' => $this->id,
-            'goriller_id' => isset($this->goriller) ? $this->goriller->id : null,
+            'user_name' => isset($this->user) ? $this->user->name : null,
             'tag' => $this->tag,
-            'title' => $this->title,
             'content_text' => $this->content_text,
             'created_at' => $this->created_at->format('Y/m/d H:i'),
         ];

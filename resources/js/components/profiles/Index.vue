@@ -1,88 +1,166 @@
 <template>
 <div class="container">
-	<div class="card text-center">
-        <div class="card-body">
-            <div class="d-flex flex-wrap justify-content-center mb-2">
-                <back-button />
-                <div class="form-group">
-                    <form action="profile" method="POST" enctype="multipart/form-data">
-                        <label class="font-weight-bold" for="photo">プロフィール写真</label>
-                        <!-- <button type="file" class="form-control btn btn-outline-secondary">ファイルを選択</button> -->
-                        <!-- <input type="file" class="form-control" name="file"> -->
-                        <input type="file" class="form-control-file" accept="image/*" @change="onImageChange" :name="name">
-                        <img class="form-control-file" v-if="uploadedImage" :src="uploadedImage">
-                        <img class="form-control-file" v-else src="/image/noImage.jpg">
-                    </form>
-                    <div class="form-group">
-                        <label class="font-weight-bold">ユーザ名</label>
-                        <input v-model="own.name" type="text" class="form-control">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card" key="admin">
+                <div class="card-body">
+                    <!-- <div class="d-flex justify-content-start mb-3"> -->
+                    <div class="d-flex flex-wrap justify-content-center mb-2">
+                        <div class="mr-auto">
+                            <!-- <span class="span-header">プロフィール</span> -->
+                            <h3>{{ own.goriller_name }}</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <button type="button" class="btn btn-dark" @click="onBack">戻る</button>
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <button type="submit" class="form-control-btn btn btn-primary">保存</button>
+                        <p v-if="profile.path"></p>
+                        <img class="img" v-if="profile.path" src={{ profile.path }}>
+                        <img class="img" v-else src="profile.path">
+                        <router-link
+                            :to="{ name: 'profile.upload'}"
+                            class="btn btn-secondary"
+                        >
+                            <i class="fas fa-pencil-alt"></i>
+                        </router-link>
                     </div>
+
                 </div>
             </div>
         </div>
-	</div>
+    </div>
+    <loading :active.sync="isLoading" :is-full-page="fullPage"></loading>
 </div>
 </template>
 
 <script>
+import moment from 'moment';
 export default {
-    props: {
-        name: {
-            type: String,
-            default: "",
-        },
-        src: {
-            type: String,
-            default: "",
-        },
-    },
-    data: function () {
+    props: [
+        'profile_id',
+    ],
+    data () {
         return {
-            uploadedImage: this.src,
-        };
+            profile: {
+                id: '',
+                path: '',
+                goriller_name: '',
+            },
+
+            invalid: false,
+            errorMessage: '',
+
+            isLoading: false,
+            fullPage: false,
+        }
     },
-    mounted () {
-        //
+    created () {
+        this.getItems()
     },
     watch: {
-        //
-    }, 
+        // 
+    },
     computed: {
-        own() {
+        own: function () {
             return this.$store.state.user
         },
     },
     methods: {
-        onImageChange(e) {
-            const files = e.target.files;
-            if (files.length > 0) {
-                this.createImage(files[0]);
+        getItems: function () {
+            this.isLoading = true;
+            const api = axios.create()
+            axios.all([
+                api.get('/api/profile'),
+            ]).then(axios.spread((res1, res2, res3) => {
+                this.profile = res1.data
+                this.isLoading = false
+            }))
+        },
+        onStore: function () {
+            let _this = this
+            if (this.mode == 'create') {
+                axios.post('/api/goriller', {
+                    goriller: this.goriller,
+                })
+                .then(function (resp) {
+                    if (resp.data.result) {
+                        alert('登録しました。')
+                        _this.$router.go(-1)
+                    } else {
+                        _this.errorMessage = resp.data.errorMessage
+                        _this.invalid = true
+                    }
+                })
+                .catch(function (resp) {
+                    console.log(resp)
+                });
             } else {
-                this.uploadedImage = this.src;
+                axios.put('/api/goriller/'+this.goriller.id, {
+                    goriller: this.goriller,
+                })
+                .then(function (resp) {
+                    if (resp.data.result) {
+                        alert('更新しました。')
+                        _this.$router.go(-1)
+                    } else {
+                        _this.errorMessage = resp.data.errorMessage
+                        _this.invalid = true
+                    }
+                })
+                .catch(function (resp) {
+                    console.log(resp)
+                });
             }
         },
-        createImage(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this.uploadedImage = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        onBack: function () {
+            this.$router.go(-1)
         },
+    },
+    components: {
+        // Loading
     },
 }
 </script>
 
 <style lang="scss" scoped>
 @import "resources/sass/variables";
-.btn-menu {
-    height: 6rem;
-    width: 9rem;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.row-line {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-bottom: 1rem;
+}
+.form-content {
+    width: 12rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: inline-block;
+}
+.form-content-lg {
+    width: 15rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: inline-block;
+}
+.required-label label:after {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    background-color: #ec5d53;
+    color: #fff;
+    content: "必須";
+    font-size: 9px;
+    line-height: 10px;
+}
+.img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    text-align: center;
+    border-radius: 150%;
+    border: 3px solid greenyellow;
 }
 </style>

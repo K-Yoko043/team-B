@@ -5,107 +5,118 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProfilesForList as ProfileForListResource;
+use App\Http\Resources\ProfileForList as ProfileForListResource;
+use App\Http\Resources\ProfileForShow as ProfileForShowResource;
+
+use App\Profile;
+use App\Goriller;
 
 
 class ProfileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $profiles = Profile::all();
-        // $data = [
-        //     'profiles' => $profiles
-        // ]
-        return ProfileForListResource::collection($profiles);
-    }
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index()
+  {
+    $profiles = Profile::all();
+    return ProfileForListResource::collection($profiles);
+  }
 
-    public function upload(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'file' => 'required | max:10240 | mimes:jpeg,gif,png',
-        ]);
+  /**
+   * Show the form for creating a new resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function create()
+  {
+    //
+  }
 
-        if ($validator->fails()) {
-            return back()->withInput()->withErrors($validator);
-        }
+/**
+ * Store a newly created resource in storage.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\Response
+ */
+public function store(Request $request)
+{
+  $this->validate($request, [
+    'file' => 'required | image',
+    ], [
+    'title.required' => 'タイトルを入力してください。',
+    'file.required' => '画像が選択されていません。',
+    'file.image' => '画像ファイルではありません。',
+  ]);
 
-        $file = $request->file('file');
-        $path = Storage::disk('s3')->putFile('/', $file, 'public');
-        Profile::create([
-            'image_file_name' => $path,
-        ]);
+  if (request()->file) {
+    $file_name = time() . '.' . request()->file->getClientOriginalName();
+    request()->file->storeAs('public', $file_name);
+  }
+  $image = new Profile();
+  $image->path = 'storage/' . $file_name;
+  $image->save();
 
-        return redirect('/');
-    }
+  // DB::transaction(function () use ($request) {
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+  //   $goriller = new Goriller;
+  //   $goriller->first_name = $request->goriller['first_name'];
+  //   $goriller->last_name = $request->goriller['last_name'];
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  //   $image->goriller_id = $goriller->id;
+  //   $image->save();
+  // });
+  
+  return response()->json([
+    'success' => '保存しました',
+    'result' => true,
+  ]);
+}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+/**
+ * Display the specified resource.
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+public function show(Profile $profile)
+{
+  return new ProfileForShowResource($profile);
+}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+/**
+ * Show the form for editing the specified resource.
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+public function edit($id)
+{
+//
+}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+/**
+ * Update the specified resource in storage.
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+public function update(Request $request, $id)
+{
+//
+}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+/**
+ * Remove the specified resource from storage.
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+public function destroy($id)
+{
+//
+}
 }

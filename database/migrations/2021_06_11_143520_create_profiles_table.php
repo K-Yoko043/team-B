@@ -15,10 +15,8 @@ class CreateProfilesTable extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('hobby');
-            $table->date('birthday');
-            $table->string('image_file_name', 100);
+            $table->string('path');
+            $table->unsignedBigInteger('goriller_id')->nullable();
             $table->timestamps();
         });
     }

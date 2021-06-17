@@ -165,12 +165,6 @@ class GorillerController extends Controller
         ]);
     }
 
-    public function selector()
-    {
-        $gorillers = Goriller::all();
-        return GorillerSelectorResource::collection($gorillers);
-    }
-
     public function fullname()
     {
         $gorillers = Goriller::all();

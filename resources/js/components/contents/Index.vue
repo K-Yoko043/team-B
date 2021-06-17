@@ -17,17 +17,30 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>タイトル</label>
-                        <input v-model="content.title" type="text" class="form-control" placeholder="タイトルを入力してください。">
+                    <div class="form-group" v-if="own.is_admin">
+                        <label>投稿者</label>
+                        <input class="text-center form-control" readonly="readonly" placeholder="管理者">
+                    </div>
+
+                    <div class="form-group" v-else>
+                        <label>投稿者</label>
+                        <input v-model="own.goriller_name" class="text-center form-control" readonly="readonly">
                     </div>
 
                     <div class="form-group">
                         <label>タグ</label>
                         <select v-model="content.tag" class="form-control">
-                            <option>フィロソフィー勉強</option>
+                            <option>フィロソフィー勉強会</option>
                             <option>NG勉強会</option>
                         </select>
+                    </div>
+
+                    <div class="row-line">
+                        <transition name="fade" mode="out-in">
+                            <div class="alert alert-danger" role="alert" v-if="invalid">
+                                {{ errorMessage }}
+                            </div>
+                        </transition>
                     </div>
 
                     <div class="form-group">
@@ -47,18 +60,18 @@
 import moment from 'moment';
 export default {
     props: [
-        
+        // 'content_id',
     ],
     data () {
         return {
             content: {
-              goriller_id: '',
               tag: '',
-              title: '',
-              content_text: '',  
+              content_text: '', 
+              user_name: '', 
             },
             isLoading: false,
-            is_text: '',
+            invalid: false,
+            errorMessage: '',
         }
     },
     created () {
@@ -68,22 +81,32 @@ export default {
         //
     },
     computed: {
-        //
+        own() {
+            return this.$store.state.user
+        },
+        
     },
     methods: {
         getItems: function () {
             this.isLoading = true;
             const api = axios.create()
             axios.all([
-                api.get('/api/content'),
+                api.get('/api/content/'),
             ]).then(axios.spread((res1, res2, res3, res4) => {
                 this.contents = res1.data
-                
                 this.isLoading = false
             }))
         },
-
         onStore: function () {
+            this.invalid = false
+            this.errorMessage = ''
+
+            if (!this.content.tag) {
+                this.errorMessage = 'タグを選択してください。'
+                this.invalid = true
+                return
+            }
+
             let _this = this
             axios.post('/api/content', {
                 content: this.content,
@@ -117,7 +140,3 @@ export default {
     },
 }
 </script>
-
-<style lang="scss" scoped>
-@import "resources/sass/variables";
-</style>

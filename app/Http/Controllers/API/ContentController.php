@@ -8,10 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ContentForList as ContentForListResource;
 use App\Http\Resources\ContentForShow as ContentForShowResource;
 use App\Http\Resources\ContentSelector as ContentSelectorResource;
-
 use App\Goriller;
 use App\Content;
-use App\Like;
+use App\User;
+
+use Illuminate\Support\Facades\Auth;
 
 class ContentController extends Controller
 {
@@ -20,10 +21,33 @@ class ContentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contents = Content::all();
-        return ContentForListResource::collection($contents);
+        // requestでcontent_textを取得
+        $content_text = $request->content_text;
+        $query = Content::when($content_text, function ($query) use ($content_text) {
+            $query->where('content_text',  'like', '%'.$content_text.'%');
+        });
+
+        $count_item = $query->count();
+        $contents = $query->get();
+      
+        // $sort = json_decode($request->sort, true);
+
+        // if ($sort['isAsc']) {
+        //     $contents = $query->orderBy("{$sort['key']}", 'asc');
+        // } else {
+        //     $contents = $query->orderBy("{$sort['key']}", 'desc');
+        // }
+        
+        return response()->json([
+            'content_text' => $content_text,
+            'total_items' => $count_item,
+            'contents' => ContentForListResource::collection($contents),
+        ]);
+
+        // $contents = Content::all();
+        // return ContentForListResource::collection($contents);
     }
 
     /**
@@ -49,14 +73,11 @@ class ContentController extends Controller
             $position++;
 
             $content = new Content;
-            \Log::info($content);
-            $content->title = $request->content['title'];
             $content->tag = $request->content['tag'];
             $content->content_text = $request->content['content_text'];
             $content->position = $position;
 
-            $goriller = new Goriller;
-            $content->goriller_id = $goriller->id;
+            $content->user_id = Auth::id();
             $content->save();
 
         });
@@ -98,7 +119,7 @@ class ContentController extends Controller
     public function update(Request $request, Content $content)
     {
         $content = DB::transaction(function () use ($request, $content) {
-            $content->title = $request->content['title'];
+            // $content->title = $request->content['title'];
             $content->tag = $request->content['tag'];
             $content->content_text = $request->content['content_text'];
             $content->save();

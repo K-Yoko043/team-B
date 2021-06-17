@@ -19,8 +19,8 @@ class User extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'is_admin' => $this->is_admin,
-            'employee_id' => isset($this->employee) ? $this->employee->id : null,
-            'employee' => $this->employee ?: null,
+            'goriller_id' => isset($this->goriller) ? $this->goriller->id : null,
+            'goriller_name' => isset($this->goriller) ? $this->goriller->full_name : null,
         ];
     }
 }

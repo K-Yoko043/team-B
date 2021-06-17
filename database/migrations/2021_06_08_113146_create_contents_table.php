@@ -15,12 +15,11 @@ class CreateContentsTable extends Migration
     {
         Schema::create('contents', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('goriller_id')->nullable()->comment('投稿者');
+            $table->unsignedBigInteger('user_id')->nullable()->comment('投稿者');
             $table->string('tag')->nullable()->comment('タグ');
-            $table->string('title')->nullable()->comment('タイトル');
-            $table->string('content_text')->nullable()->comment('投稿内容');
+            $table->longText('content_text')->nullable()->comment('投稿内容');
             $table->unsignedinteger('position')->nullable();
-            $table->softDeletes();
+            // $table->softDeletes();
             $table->timestamps();
         });
     }

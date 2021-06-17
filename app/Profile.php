@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     protected $fillable = [
-        'image_file_name'
+        'title',
+        'path',
     ];
+
+    /**
+     * ゴリラーを取得
+     */
+    public function goriller()
+    {
+        return $this->belongsTo('App\Goriller');
+    }
 }

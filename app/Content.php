@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     /**
      * 投稿者を取得
@@ -24,5 +24,10 @@ class Content extends Model
     public function likes()
     {
         return $this->hasMany('App\Like');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 }

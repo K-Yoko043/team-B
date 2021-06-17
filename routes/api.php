@@ -37,7 +37,8 @@ Route::middleware(['auth:api'])->group(function () {
 
     
     // プロフィール
-    Route::post('profile', 'API\ProfileController@upload');
     Route::get('profile', 'API\ProfileController@index');
+    Route::get('profile/{profile}', 'API\ProfileController@show');
+    Route::post('profile', 'API\ProfileController@store');
 
 });

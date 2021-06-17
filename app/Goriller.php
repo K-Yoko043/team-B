@@ -37,6 +37,14 @@ class Goriller extends Model
     }
 
     /**
+     * プロフィール画像を取得
+     */
+    public function profile()
+    {
+        return $this->hasOne('App\Profile');
+    }
+
+    /**
      * いいねを取得
      */
     public function likes()

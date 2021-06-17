@@ -88,11 +88,13 @@ const router = new VueRouter({
 
         // プロフィール
         { name: 'profile', path: '/profile', component: require('./components/profiles/Index.vue').default },
+        { name: 'profile.upload', path: '/profile/upload', component: require('./components/profiles/UploadImage.vue').default },
+
 
         // 設定
         { name: 'setting', path: '/setting', component: require('./components/settings/Index.vue').default },
 
-        // 従業員
+        // ゴリラー
         { name: 'goriller', path: '/goriller', component: require('./components/gorillers/Index.vue').default },
         { name: 'goriller.create', path: '/goriller/create', component: require('./components/gorillers/CreateUpdate.vue').default },
         { name: 'goriller.show', path: '/goriller/show/:goriller_id', component: require('./components/gorillers/CreateUpdate.vue').default, props: true },
@@ -106,6 +108,10 @@ const router = new VueRouter({
             component: require('./components/contents/CreateUpdate.vue').default,
             props: true,
         },
+
+        // 返信内容
+        { name: 'reply', path: '/reply', component: require('./components/tests/Index.vue').default },
+
         
 
         // not found
@@ -116,6 +122,7 @@ const router = new VueRouter({
 const store = new Vuex.Store({
     state: {
         user: '',
+        barcode: '',
         sort: {
             key: '', // ソートキー
             isAsc: false // 昇順ならtrue,降順ならfalse
