@@ -49,8 +49,17 @@ class User extends Authenticatable
     /**
      * 従業員を取得
      */
-    public function employee()
+    public function goriller()
     {
-        return $this->hasOne('App\Employee');
+        return $this->hasOne('App\Goriller');
     }
+
+    /**
+     * 投稿内容を取得
+     */
+    public function contents()
+    {
+        return $this->hasMany('App\Content');
+    }
+
 }

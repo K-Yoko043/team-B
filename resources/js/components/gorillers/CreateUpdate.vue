@@ -60,9 +60,9 @@
                         <!-- </template> -->
                         <div class="row-line">
                             <transition name="fade" mode="out-in">
-                            <div class="alert alert-danger" role="alert" v-if="invalid">
-                            {{errorMessage}}
-                            </div>
+								<div class="alert alert-danger" role="alert" v-if="invalid">
+									{{errorMessage}}
+								</div>
                             </transition>
                         </div>
                     </form>
