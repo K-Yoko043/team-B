@@ -8,8 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Content extends Model
 {
-    // use SoftDeletes;
-
+    /**
+     * 文字列へキャストする属性
+     *
+     * @var array
+     */
+    protected $casts = [
+        'content_text' => 'string',
+    ];
     /**
      * 投稿者を取得
      */
