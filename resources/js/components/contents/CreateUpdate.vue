@@ -21,7 +21,7 @@
 					<div class="form-group">
 						<label>タグ</label>
 						<select v-model="content.tag" class="form-control">
-							<option>フィロソフィー勉強</option>
+							<option>フィロソフィー勉強会</option>
 							<option>NG勉強会</option>
 						</select>
 					</div>

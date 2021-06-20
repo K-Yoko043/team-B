@@ -15,10 +15,10 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <p v-if="profile.path"></p>
-                        <img class="img" v-if="profile.path" src={{ profile.path }}>
-                        <img class="img" v-else src="profile.path">
+                    <div class="form-group text-center">
+                        <!-- <p v-if="profile.path"></p> -->
+                        <img class="img" v-if="profile.path" src="/storage/1623711468柴犬.jpg">
+                        <img class="img" v-else src="/storage/1623711468柴犬.jpg">
                         <router-link
                             :to="{ name: 'profile.upload'}"
                             class="btn btn-secondary"
