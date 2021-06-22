@@ -62,4 +62,19 @@ class User extends Authenticatable
         return $this->hasMany('App\Content');
     }
 
+    /**
+     * いいねを取得
+     */
+    public function likes()
+    {
+        return $this->hasMany('App\Like');
+    }
+
+    /**
+     * プロフィールを取得
+     */
+    public function profile()
+    {
+        return $this->hasOne('App\Profile');
+    }
 }

@@ -29,8 +29,9 @@
 								>プロフィール編集</router-link
 							>
 						</a>
-						<a class="dropdown-item" href="#">フィロソフィー勉強会</a>
-						<a class="dropdown-item" href="#">NG勉強会</a>
+						<!-- クリックされたらonSearch? -->
+					 	<a class="dropdown-item" href="#" @click="onSearch">フィロソフィー勉強会</a>
+						<a class="dropdown-item" href="#" @click="onSearch">NG勉強会</a>
 						<a class="dropdown-item" href="#" v-show="own.is_admin">
 							<router-link
 								:to="{ name: 'setting' }"
@@ -49,7 +50,7 @@
 					:to="{ name: 'content' }"
 					class="btn btn-outline-primary btn-lg mr-3 mb-3"
 					>
-					<i class="fas fa-plus-circle"></i><br>新規投稿</router-link
+					<i class="fas fa-pencil-alt"></i><br>投稿する</router-link
 				>
 
 				<router-link
@@ -63,11 +64,11 @@
 
 		<table class="table table-striped">
 			<div v-for="content in sortContents"
-					:key="content.id" 
-					class="card bg-white border-info"
+				:key="content.id" 
+				class="card bg-white border-info"
 			>
 				<h3 class="card-header">
-					<img src="/storage/1623712333.柴犬.jpg" class="img-thumbnail" alt="">
+					<img src="/storage/1623910044.柴犬.jpg" class="img-thumbnail" alt="">
 					{{ content.user_name }}
 					<i v-if="content.user_name === own.name"
 						 class="far fa-edit clickable" @click="onResume(content)">
@@ -78,11 +79,15 @@
 					<p class="card-text text-left" style="white-space: pre-wrap;">{{ content.content_text }}</p>
 				</div>
 				<p>投稿日時：{{ content.created_at }}</p>
-				<div class="card-footer btn-group" role="group">                   
-					<button class="btn btn-outline-success btn-sm" @click="good">
+				<div class="card-footer btn-group" role="group"> 
+										                  
+					<button class="btn btn-outline-success btn-sm" v-if="is_liked" @click="unlike(content)">
+						<i class="far fa-lg fa-thumbs-up"></i> いいねを取り消す
+					</button>
+					<button class="btn btn-outline-success btn-sm" v-else @click="like(content)">
 						<i class="far fa-lg fa-thumbs-up"></i> いいね
 					</button>
-					<!-- <button class="btn btn-outline-info btn-sm" data-toggle="collapse" data-target="#reply" @click="onReply"> -->
+					
 					<button class="btn btn-outline-info btn-sm" data-toggle="collapse" data-target="#reply">
 						<i class="far fa-lg fa-comment"></i> コメントする
 					</button>
@@ -116,10 +121,11 @@ export default {
 			contents: [],
 			gorillers: [],
 			content_text: '',
-			user_name: '',
+			tag: '',
+			good_count: '',
 			keyword: '',
+			is_liked: false,
 			isLoading: false,
-
 			sort: {
 					key: 'id',
 					isAsc: true,
@@ -158,8 +164,8 @@ export default {
 				params: {
 					sort: this.sort,
 					keyword: this.keyword,
-					user_name: this.user_name,
 					content_text: this.content_text,
+					tag: this.tag,
 				},
 			})
 			this.content_text = data.content_text
@@ -175,6 +181,7 @@ export default {
 				this.isLoading = false
 			}))
 		},
+
 		onSearch() {
 			this.$store.state.barcode = ''
       this.offset = 0
@@ -183,21 +190,12 @@ export default {
 		},
 
 		onResume(content) {
-			this.$router.push({ name: 'content.resume', params: { contentId: content.id } })
+			this.$router.push({ 
+				name: 'content.resume', 
+				params: { contentId: content.id }
+			})
 		},
-		good() {
-			alert('いいね！')
-		},
-		onReply: function () {
-			this.$router.push({ name: 'reply' })
-		},
-		comment: function () {
-			this.isLoading = true;
-			const api = axios.create()
-			axios.all([
-					api.get
-			])
-		}
+
 	},
 }
 </script>

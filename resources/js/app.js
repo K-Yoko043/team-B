@@ -79,71 +79,67 @@ Vue.component("number-input", require("./components/commons/NumberInput.vue").de
 
 
 const router = new VueRouter({
-    mode: 'history',
-    routes: [
-        // ホーム
-        { name: 'home', path: '/', component: require('./components/HomeComponent.vue').default },
-        // mock
-        // { name: 'mock', path: '/mock', component: require('./components/mocks/MockBarcode.vue').default },
+	mode: 'history',
+	routes: [
+		// ホーム
+		{ name: 'home', path: '/', component: require('./components/HomeComponent.vue').default },
 
-        // プロフィール
-        { name: 'profile', path: '/profile', component: require('./components/profiles/Index.vue').default },
-        { name: 'profile.upload', path: '/profile/upload', component: require('./components/profiles/UploadImage.vue').default },
+		// プロフィール
+		{ name: 'profile', path: '/profile', component: require('./components/profiles/Index.vue').default },
+		{ name: 'profile.upload', path: '/profile/upload', component: require('./components/profiles/UploadImage.vue').default },
+
+		// 設定
+		{ name: 'setting', path: '/setting', component: require('./components/settings/Index.vue').default },
+
+		// ゴリラー
+		{ name: 'goriller', path: '/goriller', component: require('./components/gorillers/Index.vue').default },
+		{ name: 'goriller.create', path: '/goriller/create', component: require('./components/gorillers/CreateUpdate.vue').default },
+		{ name: 'goriller.show', path: '/goriller/show/:goriller_id', component: require('./components/gorillers/CreateUpdate.vue').default, props: true },
+
+		// 投稿内容
+		{ name: 'content', path: '/content', component: require('./components/contents/Index.vue').default},
+		{ name: 'content.create', path: '/content/create', component: require('./components/contents/CreateUpdate.vue').default},
+		{ 
+			name: 'content.resume',
+			path: '/content/resume/:contentId',
+			component: require('./components/contents/CreateUpdate.vue').default,
+			props: true,
+		},
+
+		// いいね
+		{ name: 'content.like', path: '/content', component: require('./components/contents/Index.vue').default},
 
 
-        // 設定
-        { name: 'setting', path: '/setting', component: require('./components/settings/Index.vue').default },
-
-        // ゴリラー
-        { name: 'goriller', path: '/goriller', component: require('./components/gorillers/Index.vue').default },
-        { name: 'goriller.create', path: '/goriller/create', component: require('./components/gorillers/CreateUpdate.vue').default },
-        { name: 'goriller.show', path: '/goriller/show/:goriller_id', component: require('./components/gorillers/CreateUpdate.vue').default, props: true },
-
-        // 投稿内容
-        { name: 'content', path: '/content', component: require('./components/contents/Index.vue').default},
-        { name: 'content.create', path: '/content/create', component: require('./components/contents/CreateUpdate.vue').default},
-        { 
-            name: 'content.resume',
-            path: '/content/resume/:contentId',
-            component: require('./components/contents/CreateUpdate.vue').default,
-            props: true,
-        },
-
-        // 返信内容
-        { name: 'reply', path: '/reply', component: require('./components/tests/Index.vue').default },
-
-        
-
-        // not found
-        { path: '*', component: require('./components/commons/NotFoundComponent.vue').default },
-    ]
+		// not found
+		{ path: '*', component: require('./components/commons/NotFoundComponent.vue').default },
+	]
 });
 
 const store = new Vuex.Store({
-    state: {
-        user: '',
-        barcode: '',
-        sort: {
-            key: '', // ソートキー
-            isAsc: false // 昇順ならtrue,降順ならfalse
-        },
-    },
-    mutations: {
-        getUser (state, payload) {
-            axios.get('/api/user/info').then(res => {
-                // this.$store.commit('setLoginUser', res.data)
-                state.user = res.data
-            }).catch(error => {
-                console.log(error)
-            });
-        },
-    },
-    actions: {
-        getUser (context) {
-          context.commit('getUser')
-        }
-    },
-    plugins: [createPersistedState()],
+	state: {
+		user: '',
+		barcode: '',
+		sort: {
+			key: '', // ソートキー
+			isAsc: false // 昇順ならtrue,降順ならfalse
+		},
+	},
+	mutations: {
+		getUser (state, payload) {
+			axios.get('/api/user/info').then(res => {
+				// this.$store.commit('setLoginUser', res.data)
+				state.user = res.data
+			}).catch(error => {
+				console.log(error)
+			});
+		},
+	},
+	actions: {
+		getUser (context) {
+			context.commit('getUser')
+		}
+	},
+	plugins: [createPersistedState()],
 });
 
 /**
@@ -153,7 +149,7 @@ const store = new Vuex.Store({
  */
 
 const app = new Vue({
-    el: '#app',
-    store,
-    router,
+	el: '#app',
+	store,
+	router,
 });

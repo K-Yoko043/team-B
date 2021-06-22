@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     protected $fillable = [
-        'title',
         'path',
+        'goriller_id',
     ];
 
     /**
@@ -17,5 +17,13 @@ class Profile extends Model
     public function goriller()
     {
         return $this->belongsTo('App\Goriller');
+    }
+
+    /**
+     * ユーザを取得
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 }

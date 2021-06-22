@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProfileForList as ProfileForListResource;
 use App\Http\Resources\ProfileForShow as ProfileForShowResource;
@@ -22,6 +23,7 @@ class ProfileController extends Controller
   public function index()
   {
     $profiles = Profile::all();
+    \Log::info($profiles);
     return ProfileForListResource::collection($profiles);
   }
 
@@ -55,19 +57,16 @@ public function store(Request $request)
     $file_name = time() . '.' . request()->file->getClientOriginalName();
     request()->file->storeAs('public', $file_name);
   }
-  $image = new Profile();
-  $image->path = 'storage/' . $file_name;
-  $image->save();
 
-  // DB::transaction(function () use ($request) {
+  DB::transaction(function () use ($request, $file_name) {  
+    $image = new Profile();
+    $image->path = 'storage/' . $file_name;
+    $image->save();
 
-  //   $goriller = new Goriller;
-  //   $goriller->first_name = $request->goriller['first_name'];
-  //   $goriller->last_name = $request->goriller['last_name'];
-
-  //   $image->goriller_id = $goriller->id;
-  //   $image->save();
-  // });
+    $goriller = Goriller::all();
+    \Log::info($image);
+    $image->save();
+  });
   
   return response()->json([
     'success' => '保存しました',
