@@ -16,6 +16,15 @@ class Content extends Model
     protected $casts = [
         'content_text' => 'string',
     ];
+
+    /**
+     * ユーザを取得
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
     /**
      * 投稿者を取得
      */
@@ -32,8 +41,9 @@ class Content extends Model
         return $this->hasMany('App\Like');
     }
 
-    public function user()
+    public function isLiked($user_id)
     {
-        return $this->belongsTo('App\User');
+        return $this->likes()->where('user_id', $user_id)->exists();
     }
+
 }

@@ -31,10 +31,11 @@ Route::middleware(['auth:api'])->group(function () {
     // 投稿
     Route::get('content', 'API\ContentController@index');
     Route::post('content', 'API\ContentController@store');
+    Route::get('content/like/{like}', 'API\ContentController@like');
+    Route::get('content/unlike/{like}', 'API\ContentController@unlike');
     Route::get('content/{content}', 'API\ContentController@show');
     Route::put('content/{content}', 'API\ContentController@update');
     Route::delete('content/{content}', 'API\ContentController@destroy');
-
     
     // プロフィール
     Route::get('profile', 'API\ProfileController@index');

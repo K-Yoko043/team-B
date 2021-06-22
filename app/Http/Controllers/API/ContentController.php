@@ -11,11 +11,17 @@ use App\Http\Resources\ContentSelector as ContentSelectorResource;
 use App\Goriller;
 use App\Content;
 use App\User;
+use App\Like;
 
 use Illuminate\Support\Facades\Auth;
 
 class ContentController extends Controller
 {
+	public function __construct()
+	{
+		$this->middleware(['auth', 'verified'])->only(['like', 'unlike']);
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -24,31 +30,40 @@ class ContentController extends Controller
 	public function index(Request $request)
 	{
 		$keyword = $request->keyword;
-		// $user_name = $request->user_name;
 		$content_text = $request->content_text;	
 
+		$rets = [];
+		if (!empty($keyword)) {
+			$keyword = str_replace('+', ' ', $keyword);
+			$keyword = str_replace('　', ' ', $keyword);
+			$keyword = str_replace('%', ' ', $keyword);
+			$keyword = preg_replace('/\s(?=\s)/', '', $keyword);
+			$keyword = trim($keyword);
+
+			if (!empty($keyword) || $keyword !== '') {
+				$keyword = mb_convert_kana($keyword, 'KV');
+				$rets = array_unique(explode(' ', $keyword));
+			}
+		} 
+
 		$content_text = Content::groupby('content_text')->pluck('content_text');
-		// $user_name = Content::groupby('user_name')->pluck('user_name');
-		
-		$contents = Content::where('content_text', 'like', '%'.$keyword.'%')
-			// Contentは投稿者のIDしか持ってない
-			// ->orWhere('user_name', 'like', '%'.$user_name.'%')
-			->get();
+
+		if (!empty($rets)) {
+			$contents = [];
+			foreach ($rets as $ret) {
+				$contents = Content::where('content_text', 'like', '%'.$ret.'%')
+					->get();
+			}
+		} else {
+			$contents = Content::all();
+		}
+
+		\Log::info($contents);
 
 		return response()->json([
 			'content_text' => $content_text,
 			'contents' => ContentForListResource::collection($contents),
 		]);
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		//
 	}
 
 	/**
@@ -89,35 +104,28 @@ class ContentController extends Controller
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, Content $content)
+	public function update(Content $content)
 	{
-		$content = DB::transaction(function () use ($request, $content) {
-			// $content->title = $request->content['title'];
-			$content->tag = $request->content['tag'];
-			$content->content_text = $request->content['content_text'];
-			$content->save();
-		});
-
-		return response()->json([
-			'result' => true,
-		]);
+		$user->Auth::user();
+		if ($user->id != $content->user_id) {
+			if ($content->isLiked(Auth::id())) {
+				$delete_record = $content->getLike($user->id);
+				$delete_record->delete();
+			} else {
+				$like = Like::firstOrCreate(
+					array(
+						'user_id' => Auth::user()->id,
+						'content_id' => $content_id
+					)
+					);
+			}
+		}
 	}
 
 	/**
@@ -137,32 +145,4 @@ class ContentController extends Controller
 		]);
 	}
 
-	/**
-	 * いいね
-	 */
-	public function __construct()
-	{
-		$this->middleware(['auth', 'verified'])->only(['like', 'unlike']);
-	}
-
-	public function like($id)
-	{
-		Like::create([
-			'content_id' => $id,
-			'goriller_id' => Auth::id()
-		]);
-
-		session()->flash('success', 'You Liked the content.');
-		return redirect()->back();
-	}
-
-	public function unlike($id)
-	{
-		$like = Like::where('content_id', $id)
-				->where('goriller_id', Auth::id())->first();
-		$like->delete();
-
-		session()->flash('success', 'You Unliked the content.');
-		return redirect()->back();
-	}
 }
