@@ -62,7 +62,7 @@
 			</div>
 		</div>
 
-		<table class="table table-striped">
+		<table class="table table-striped" 	v-if="contents">
 			<div v-for="content in sortContents"
 				:key="content.id" 
 				class="card bg-white border-info"
@@ -74,10 +74,22 @@
 						 class="far fa-edit clickable" @click="onResume(content)">
 					</i>
 				</h3>
-				<div class="card-body">
-					<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
-					<p class="card-text text-left" style="white-space: pre-wrap;">{{ content.content_text }}</p>
+
+				<div class="readmore">
+					<div class="card-body">
+						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
+						<h6>{{content.content_text.length}}文字</h6>
+						<input id="check1" class="readmore-check" type="checkbox">
+						<div class="readmore-content">
+							<p class="card-text text-left" 
+								style="white-space: pre-wrap;"
+							>{{ content.content_text }}
+							</p>
+						</div>
+						<label class="readmore-label" for="check1" v-if="content.content_text.length > 100"></label>
+					</div>
 				</div>
+
 				<p>投稿日時：{{ content.created_at }}</p>
 				<div class="card-footer btn-group" role="group"> 
 										                  
@@ -98,8 +110,14 @@
 						</div>
 						<div class="form-group">
 							<div class="form-group">
-								<textarea class="form-control" style="height: 300px;" placeholder="コメントする..."></textarea>
+								<textarea class="form-control" v-model="content.comments" style="height: 300px;" placeholder="コメントする..."></textarea>
 							</div>
+						</div>
+						<div class="form-group">
+							<button v-show="content.comments != ''" @click="onComment(content.id)" 
+								type="button" class="btn btn-sm btn-info">
+								コメントする
+							</button>
 						</div>
 					</div>
 				</div>
@@ -137,14 +155,14 @@ export default {
 		this.getItems()
 	},
 	watch: {
-		//
+		
 	},
 	computed: {
 		own() {
 			return this.$store.state.user
 		},
 		sortContents() {
-			return this.contents.slice().reverse();
+			return this.contents.reverse();
 		},
 	},
 	methods: {
@@ -196,6 +214,8 @@ export default {
 			})
 		},
 
+
+
 	},
 }
 </script>
@@ -220,5 +240,62 @@ export default {
 
 .card {
 	margin-bottom: 50px;
+}
+
+.readmore {
+	position: relative;
+	box-sizing: border-box;
+	padding: 10px;
+	border: 1px solid #CCC;
+}
+.readmore-content {
+	position: relative;
+	overflow: hidden;
+	height: 100px;
+}
+.readmore-content::before {
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	content: "";
+	height: 50px;
+	background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.8) 50%, #fff 100%);
+}
+.readmore-label {
+	display: table;
+	bottom: 5px;
+	position: absolute;
+	bottom: 5px;
+	left: 50%;
+	transform: translateX(-50%);
+	-webkit-transform: translateX(-50%);
+	margin: 0 auto;
+	z-index: 2;
+	padding:	0 10px;
+	background-color: #4283cca6;
+	border-radius: 10px;
+	color: #FFF;
+}
+.readmore-label::before {
+	content: "続きを読む";
+}
+.readmore-check {
+	display: none;
+}
+.readmore-check:checked ~ .readmore-label {
+	position: static;
+	transform: translateX(0);
+	-webkit-transform: translateX(0);
+}
+.readmore-check:checked ~ .readmore-label:before {
+	content: "閉じる";
+}
+.readmore-check:checked ~ .readmore-content {
+	height: auto;
+}
+.readmore-check:checked ~ .readmore-content::before {
+	display: none;
 }
 </style>

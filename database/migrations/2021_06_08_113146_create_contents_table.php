@@ -17,9 +17,9 @@ class CreateContentsTable extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('user_id')->nullable()->comment('投稿者');
             $table->string('tag')->nullable()->comment('タグ');
-            $table->longText('content_text')->nullable()->comment('投稿内容');
+            $table->text('content_text')->nullable()->comment('投稿内容');
+            $table->longText('comments')->nullable()->comment('コメント内容');
             $table->unsignedinteger('position')->nullable();
-            // $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -36,6 +36,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('content/{content}', 'API\ContentController@show');
     Route::put('content/{content}', 'API\ContentController@update');
     Route::delete('content/{content}', 'API\ContentController@destroy');
+    // コメント（返信）
+    Route::get('content/{content}/get_comments', 'API\CommentController@index');
     
     // プロフィール
     Route::get('profile', 'API\ProfileController@index');

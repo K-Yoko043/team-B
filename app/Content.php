@@ -33,17 +33,9 @@ class Content extends Model
         return $this->belongsTo('App\Goriller');
     }
 
-    /**
-     * いいねを取得
-     */
-    public function likes()
+    public function comments()
     {
-        return $this->hasMany('App\Like');
-    }
-
-    public function isLiked($user_id)
-    {
-        return $this->likes()->where('user_id', $user_id)->exists();
+        return $this->hasMany('App\Comment');
     }
 
 }

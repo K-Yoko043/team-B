@@ -5,22 +5,23 @@
 			<div class="d-flex flex-wrap justify-content-center mb-2">
 				<back-button />
 				<div class="form-group">
-						<div class="form-group">
+					<div class="form-group">
 						<label class="font-weight-bold">プロフィール写真</label>
-						<input type="file" class="form-control-file" @change="confirmImage" v-if="view">
 					</div>
 
 					<div class="form-group">
-						<p v-if="confirmImage">
-							<img class="img" v-if="confirmedImage" :src="confirmedImage" />
-							<img class="img" v-else src="/image/noImage.jpg">
-						</p>
-						<button class="btn btn-success form-control-btn" @click="uploadImage">アップロード</button>
+						<input @change="fileSelect" type="file" name="file">
+						<img class="img" v-if="confirmedImage" :src="confirmedImage" />
+						<img class="img" v-else src="/image/noImage.jpg">
 					</div>
 
-					<div class="alert alert-success" role="alert" v-if="invalid">
-					　画像を選択してください。
+					<div class="form-group">
+						<button class="btn btn-success" @click="upload" type="submit">アップロード</button>
+						<div class="alert alert-success" role="alert" v-if="invalid">
+						　画像を選択してください。
+						</div>
 					</div>
+
 				</div>
 			</div>
 		</div>
@@ -30,93 +31,71 @@
 
 <script>
 export default {
-	props: {
-			//
-	},
+	props: [
+		'goriller_id'
+	],
 	data () {
 		return {
-			image: {
-				id: '',
-				user_name: '',
-				goriller_id: '',
-			},
-			view: true,
-
+			selected_file: null,
 			confirmedImage: "",
 			isLoading: false,
 			invalid: false,
-		};
+			view: true,
+		}
+		// 	profile: {
+		// 		id: '',
+		// 		path: '',
+		// 	},
 	},
 	created() {
-		this.getImage()
+		// this.getImage()
 	},
 	watch: {
 		//
 	}, 
 	computed: {
-		own() {
+		own: function () {
 			return this.$store.state.user
 		},
 	},
 	methods: {
-		getImage: function () {
-			this.isLoading = true;
-			const api = axios.create()
-			axios.all([
-				api.get('/api/profile'),
-			]).then(axios.spread((res1, res2) => {
-				this.image = res1.data
-				this.isLoading = false
-			}))
+		fileSelect: function(e) {
+			this.selected_file = e.target.files[0];
 		},
-		confirmImage(e) {
-			this.message = "";
-			this.file = e.target.files[0];
-			if (!this.file.type.match("image.*")) {
-				this.message = "画像ファイルを選択してください";
-				this.confirmedImage = "";
-				this.invalid = true;
-				return;
-			}
-			this.createImage(this.file);
-		},
-		createImage(file) {
-			let reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onload = e => {
-				this.confirmedImage = e.target.result;
+		upload: function() {
+			let formData = new FormData();
+			formData.append('file', this.selected_file);
+
+			let config = {
+				headers: {
+					'content-type': 'multipart/form-data'
+				}
 			};
-		},
-		uploadImage() {
-			this.invalid = false
-			this.errorMessage = ''
-			if(!this.file) {
-				this.invalid = true
-				return
-			}
 
-			let data = new FormData();
-			data.append("file", this.file);
-			data.append("title", this.title);
-
-			axios.post('/api/profile', data)
-				.then(response => {
-					this.getImage()
-					this.message = response.data.success
-					this.confirmedImage = ""
-					alert(this.message)
-
-					this.view = false;
-					this.$nextTick(function() {
-							this.view = true;
-					});
-
-					// this.$router.go(-1)
+			axios.post('/api/profile', formData, config)
+				.then(function(response) {
+					alert('アップロードしました')
 				})
-				.catch(err => {
-					this.message = err.response.data.errors;
-				});
-		},
+				.catch(function(error) {
+					alert('アップロードに失敗しました')
+				})
+		}
+		// getImage: function () {
+		// 	this.isLoading = true;
+		// 	const api = axios.create()
+		// 	axios.all([
+		// 		// ここでエラー出てる
+		// 		api.get('/api/profile'),
+		// 	])
+		// 	.then(axios.spread((res1, res2) => {
+		// 		this.profile = res1.data
+		// 		this.profile.goriller_id = this.own.goriller_id
+		// 		this.isLoading = false
+		// 	}))
+		// 	.catch(function (resp) {
+		// 		console.log(resp)
+		// 	});
+		// },
 	},
 }
 </script>
