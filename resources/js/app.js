@@ -86,7 +86,7 @@ const router = new VueRouter({
 
 		// プロフィール
 		{ name: 'profile', path: '/profile', component: require('./components/profiles/Index.vue').default },
-		{ name: 'profile.upload', path: '/profile/upload', component: require('./components/profiles/UploadImage.vue').default },
+		{ name: 'profile.upload', path: '/profile/upload/:goriller_id', component: require('./components/profiles/UploadImage.vue').default },
 
 		// 設定
 		{ name: 'setting', path: '/setting', component: require('./components/settings/Index.vue').default },

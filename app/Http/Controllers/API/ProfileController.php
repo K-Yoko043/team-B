@@ -23,7 +23,6 @@ class ProfileController extends Controller
   public function index()
   {
     $profiles = Profile::all();
-    \Log::info($profiles);
     return ProfileForListResource::collection($profiles);
   }
 
@@ -45,6 +44,8 @@ class ProfileController extends Controller
  */
 public function store(Request $request)
 {
+
+  
   $this->validate($request, [
     'file' => 'required | image',
     ], [
@@ -53,23 +54,19 @@ public function store(Request $request)
     'file.image' => '画像ファイルではありません。',
   ]);
 
+  \Log::info($request->all());
   if (request()->file) {
     $file_name = time() . '.' . request()->file->getClientOriginalName();
     request()->file->storeAs('public', $file_name);
   }
 
   DB::transaction(function () use ($request, $file_name) {  
-    $image = new Profile();
+    $image = new Profile;
     $image->path = 'storage/' . $file_name;
-    $image->save();
-
-    $goriller = Goriller::all();
-    \Log::info($image);
     $image->save();
   });
   
   return response()->json([
-    'success' => '保存しました',
     'result' => true,
   ]);
 }
@@ -118,4 +115,5 @@ public function destroy($id)
 {
 //
 }
+
 }

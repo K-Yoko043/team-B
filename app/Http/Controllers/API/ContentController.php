@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContentForList as ContentForListResource;
 use App\Http\Resources\ContentForShow as ContentForShowResource;
@@ -12,8 +13,6 @@ use App\Goriller;
 use App\Content;
 use App\User;
 use App\Like;
-
-use Illuminate\Support\Facades\Auth;
 
 class ContentController extends Controller
 {
@@ -110,22 +109,18 @@ class ContentController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Content $content)
+	public function update(Request $request, Content $content)
 	{
-		$user->Auth::user();
-		if ($user->id != $content->user_id) {
-			if ($content->isLiked(Auth::id())) {
-				$delete_record = $content->getLike($user->id);
-				$delete_record->delete();
-			} else {
-				$like = Like::firstOrCreate(
-					array(
-						'user_id' => Auth::user()->id,
-						'content_id' => $content_id
-					)
-					);
-			}
-		}
+		$content = DB::transaction(function () use ($request, $content) {
+			// $content->title = $request->content['title'];
+			$content->tag = $request->content['tag'];
+			$content->content_text = $request->content['content_text'];
+			$content->save();
+		});
+
+		return response()->json([
+			'result' => true,
+		]);
 	}
 
 	/**
