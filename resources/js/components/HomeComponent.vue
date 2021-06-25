@@ -118,16 +118,18 @@
         		</div>
 				<div v-if="content.comment_visusal === true">
 					<div v-for="respond in responds" :key="respond.id">
-						<hr />
-              			<p>返信者:{{ respond.user_name }}</p>
-              			<p>本文:{{ respond.text }}</p>
-              			<div v-if="respond.user_id === userid" class="comment">
-							<button class="btn btn-outline-warning btn-sm" @click="onEditrespond(respond.id, content.id)">
-                  				編集
-                			</button>
-                			<button class="btn btn-outline-danger btn-sm" @click="onDeleterespond(respond.id, content.id)">
-                 	 			削除
-                			</button>
+						<div v-if="content.id === respond.content_id">
+							<hr />
+              				<p>返信者:{{ respond.user_name }}</p>
+              				<p>本文:{{ respond.text }}</p>
+              				<div v-if="respond.user_id === userid" class="comment">
+								<button class="btn btn-outline-warning btn-sm" @click="onEditrespond(respond.id, content.id)">
+                  					編集
+                				</button>
+                				<button class="btn btn-outline-danger btn-sm" @click="onDeleterespond(respond.id, content.id)">
+                 	 				削除
+                				</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -236,11 +238,11 @@ export default {
 				this.notices = res1.data
 				this.isLoading = false
 				for (let i = 0; i < this.notices.length; i++){
-					if(this.notices[i].content_userid === this.userid &&this.notices[i].respond_userid !== this.notices[i].respond_userid){
-						this.check = 1
-					}for (let j = 0; j < i; j++) {
-						if(this.notices[i].content_id === this.notices[j].content_id &&this.notices[i].respond_username === this.notices[j].respond_username){
-							this.check = 1
+					if(this.notices[i].content_userid === this.userid &&this.notices[i].content_userid !== this.notices[i].respond_userid){
+						for (let j = 0; j < i; j++) {
+							if(this.notices[i].content_id === this.notices[j].content_id &&this.notices[i].respond_username === this.notices[j].respond_username){
+								this.check = 1
+							}
 						}
 						if (this.check === 0) {
                 			this.push +=this.notices[i].content_id +'のツイートに対して' +this.notices[i].respond_username +'から返信が来ました。\n'
@@ -353,7 +355,6 @@ export default {
         		alert(this.push)
         		axios.delete('/api/notice/' + this.userid)
         		this.isLoading = false
-        		location.reload()
       		}
     	},
     },

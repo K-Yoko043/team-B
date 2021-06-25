@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notice extends Model
 {
-    public function tweet()
+    protected $fillable = ['content_id','user_id','respond_id'];
+    public function content()
     {
-        return $this->belongsTo('App\Tweet');
+        return $this->belongsTo('App\Content');
     }
     public function user()
     {

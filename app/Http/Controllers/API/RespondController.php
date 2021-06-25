@@ -36,7 +36,7 @@ class RespondController extends Controller
             $respond = new Respond;
             $respond->text = $request->respond['text'];
             $respond->id = $request->respond['id'];
-            $respond->content_id = $request->test['content_id'];
+            $respond->content_id = $request->respond['content_id'];
             $respond->user_id = Auth::id();
             $respond->save();
         });
