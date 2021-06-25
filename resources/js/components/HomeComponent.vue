@@ -109,13 +109,13 @@
           			<button class="btn btn-outline-info btn-sm" data-toggle="collapse" @click="onAddrespond(content.id)">
             			<i class="far fa-lg fa-comment"></i> 返信する
           			</button>
-					<button v-if="content.comment_visusal === true" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
-          				&#9650;返信を非表示。
-        			</button>
-					<button v-if="content.comment_visusal === false" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
-          				&#9660;返信を表示。
-        			</button>
 				</div>
+				<div v-if="content.comment_visusal === true" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
+          			&#9650;返信を非表示。
+        		</div>
+        		<div v-if="content.comment_visusal === false" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
+          			&#9660;返信を表示。
+        		</div>
 				<div v-if="content.comment_visusal === true">
 					<div v-for="respond in responds" :key="respond.id">
 						<hr />

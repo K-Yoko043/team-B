@@ -2,9 +2,12 @@
 <template>
   <div class="card text-center mx-auto" style="max-width: 800px">
     <div class="mr-auto">
-      <span class="span-header">{{ title }}</span>
-      <br />
-      <button type="button" class="btn btn-dark" @click="onBack">戻る</button>
+      <nobr>
+        <span class="span-header">{{ title }}</span>
+        <div class="container bg-light">
+          <button type="button" class="btn btn-dark" @click="onBack">戻る</button>
+        </div>
+      </nobr>
     </div>
     <br />
     <table class="table table-striped">
@@ -23,8 +26,8 @@
       </div>
     </div>
     <div class="reply">
-      <button type="button" class="btn btn-dark" @click="onBack">キャンセル</button>
-      <button type="button" class="btn btn-primary" @click="onStore(content.user_id)">送信する</button>
+      <button type="button" class="btn btn-dark bg-left" @click="onBack">キャンセル</button>
+      <button type="button" class="btn btn-primary bg-right" @click="onStore(content.user_id)">送信する</button>
     </div>
   </div>
 </template>
