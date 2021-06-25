@@ -15,7 +15,7 @@ class CreateTestsTable extends Migration
     {
         Schema::create('tests', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('tweet_id')->nullable();
+            $table->unsignedBigInteger('content_id')->nullable();
             $table->longText('text')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->softDeletes();

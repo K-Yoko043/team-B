@@ -59,9 +59,11 @@
 						>
 						<i class="fas fa-user-edit"></i><br>Myプロフィール</router-link
 				>
+				<i class="fas fa-bell fa-2x" @click="onPush"><sup class="count" v-if="push_count !== 0">{{ push_count }}</sup></i>
 			</div>
 		</div>
-
+		<div>
+		</div>
 		<table class="table table-striped">
 			<div v-for="content in sortContents"
 				:key="content.id" 
@@ -80,26 +82,52 @@
 				</div>
 				<p>投稿日時：{{ content.created_at }}</p>
 				<div class="card-footer btn-group" role="group"> 
-										                  
-					<button class="btn btn-outline-success btn-sm" v-if="is_liked" @click="unlike(content)">
-						<i class="far fa-lg fa-thumbs-up"></i> いいねを取り消す
-					</button>
-					<button class="btn btn-outline-success btn-sm" v-else @click="like(content)">
-						<i class="far fa-lg fa-thumbs-up"></i> いいね
-					</button>
-					
-					<button class="btn btn-outline-info btn-sm" data-toggle="collapse" data-target="#reply">
-						<i class="far fa-lg fa-comment"></i> コメントする
-					</button>
-					<div id="reply" class="collapse">
- 						<div class="form-group">
-							<label>返信者</label>
-							<input v-model="own.goriller_name" class="text-center form-control" readonly="readonly">
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<textarea class="form-control" style="height: 300px;" placeholder="コメントする..."></textarea>
-							</div>
+					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary" @click="onAddgood(content.id, 1)">
+            			<a slot="icon" class="fas fa-thumbs-up fa-lg" style="color: #c0c0c0" outline="none"> </a>
+            			{{ content.count_good }}
+          			</button>
+          			<button v-else class="btn btn-outline-primary" @click="onDeletegood(content.id, 1)">
+            			<a slot="icon" class="fas fa-thumbs-up fa-lg" style="color: #00bfff" outline="none"> </a>
+            			{{ content.count_good }}
+          			</button>
+          			<button v-if="content.own_like_heart === 0" class="btn btn-outline-danger" @click="onAddgood(content.id, 2)">
+            			<a slot="icon" class="far fa-heart fa-lg" style="color: #ff0000" outline="none"> </a>
+            			{{ content.count_heart }}
+          			</button>
+          			<button v-else class="btn btn-outline-danger" @click="onDeletegood(content.id, 2)">
+            			<a slot="icon" class="fas fa-heart fa-lg" style="color: #ff0000" outline="none"> </a>
+            			{{ content.count_heart }}
+          			</button>
+          			<button v-if="content.own_like_check === 0" class="btn btn-outline-success" @click="onAddgood(content.id, 3)">
+            			<a slot="icon" class="far fa-check-square fa-lg" style="color: #c0c0c0" outline="none"> </a>
+            			{{ content.count_check }}
+          			</button>
+          			<button v-else class="btn btn-outline-success" @click="onDeletegood(content.id, 3)">
+            			<a slot="icon" class="fas fa-check-square fa-lg" style="color: #00ff00" outline="none"> </a>
+            			{{ content.count_check }}
+          			</button>
+          			<button class="btn btn-outline-info btn-sm" data-toggle="collapse" @click="onAddrespond(content.id)">
+            			<i class="far fa-lg fa-comment"></i> 返信する
+          			</button>
+					<button v-if="content.comment_visusal === true" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
+          				&#9650;返信を非表示。
+        			</button>
+					<button v-if="content.comment_visusal === false" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
+          				&#9660;返信を表示。
+        			</button>
+				</div>
+				<div v-if="content.comment_visusal === true">
+					<div v-for="respond in responds" :key="respond.id">
+						<hr />
+              			<p>返信者:{{ respond.user_name }}</p>
+              			<p>本文:{{ respond.text }}</p>
+              			<div v-if="respond.user_id === userid" class="comment">
+							<button class="btn btn-outline-warning btn-sm" @click="onEditrespond(respond.id, content.id)">
+                  				編集
+                			</button>
+                			<button class="btn btn-outline-danger btn-sm" @click="onDeleterespond(respond.id, content.id)">
+                 	 			削除
+                			</button>
 						</div>
 					</div>
 				</div>
@@ -120,6 +148,8 @@ export default {
 		return {
 			contents: [],
 			gorillers: [],
+			responds:[],
+			notices:[],
 			content_text: '',
 			tag: '',
 			good_count: '',
@@ -129,7 +159,12 @@ export default {
 			sort: {
 					key: 'id',
 					isAsc: true,
-			}
+			},
+			push: '',
+      		push_count: 0,
+      		check: 0,
+			userid: null,
+      		username: '',
 		}
 	},
 	mounted () {
@@ -180,23 +215,148 @@ export default {
 				this.gorillers = res1.data
 				this.isLoading = false
 			}))
+			const api2 = axios.create()
+			axios.all([
+				api2.get('/api/notice/userid'),
+			]).then(axios.spread((res1, res2) => {
+				this.userid = res1.data
+				this.isLoading = false
+			}))
+			const api3 = axios.create()
+			axios.all([
+				api3.get('/api/notice/username'),
+			]).then(axios.spread((res1, res2) => {
+				this.username = res1.data
+				this.isLoading = false
+			}))
+			const api4 = axios.create()
+			axios.all([
+				api4.get('/api/notice'),
+			]).then(axios.spread((res1, res2) => {
+				this.notices = res1.data
+				this.isLoading = false
+				for (let i = 0; i < this.notices.length; i++){
+					if(this.notices[i].content_userid === this.userid &&this.notices[i].respond_userid !== this.notices[i].respond_userid){
+						this.check = 1
+					}for (let j = 0; j < i; j++) {
+						if(this.notices[i].content_id === this.notices[j].content_id &&this.notices[i].respond_username === this.notices[j].respond_username){
+							this.check = 1
+						}
+						if (this.check === 0) {
+                			this.push +=this.notices[i].content_id +'のツイートに対して' +this.notices[i].respond_username +'から返信が来ました。\n'
+                			this.push_count += 1
+              			}
+              			this.check = 0
+					}
+				}
+			}))
+			const api5 = axios.create()
+      			axios.all([api5.get('/api/respond')]).then(
+        			axios.spread((res1, res2, res3, res4) => {
+          			this.responds = res1.data
+          			this.isLoading = false
+        		}),
+      		)
 		},
-
 		onSearch() {
 			this.$store.state.barcode = ''
-      this.offset = 0
-      this.currentPage = 0
-      this.getItems()
+      		this.offset = 0
+      		this.currentPage = 0
+      		this.getItems()
 		},
-
+		onAddrespond:function(contentId){
+			this.$router.push({ name: 'respond.create', params: { contentId: contentId } })
+		},
+		onEditrespond:function(respondId,contentId){
+			this.$router.push({ name: 'respond.show', params: { contentId: contentId,respondId:respondId} })
+		},
+		onDeleterespond: function(respondId, contentId) {
+      		if (!confirm('削除してもよろしいですか？')) {
+        		return
+      		}
+      		const _this = this
+      		axios.delete('/api/notice/' + this.userid + '/' + contentId)
+      		axios
+        		.delete('/api/respond/' + respondId)
+        		.then(function(resp) {
+          		alert('削除しました。')
+        		})
+        		.catch(function(resp) {
+          			console.log(resp)
+        		})
+        		.finally(function() {
+          		//
+        		})
+      		location.reload()
+    	},
+		onAddgood: function(tweetId, mark) {
+      		this.invalid = false
+      		this.errorMessage = ''
+      		const _this = this
+      		axios
+        		.get('/api/content/addgood/' + tweetId + '/' + mark)
+        		.then(function(resp) {})
+        		.catch(function(resp) {
+          			console.log(resp)
+        	})
+      		if (mark === 1) {
+        		this.contents[tweetId - 1].own_like_good = 1
+        		this.contents[tweetId - 1].count_good += 1
+      		}
+      		if (mark === 2) {
+        		this.contents[tweetId - 1].own_like_heart = 1
+        		this.contents[tweetId - 1].count_heart += 1
+      		}
+      		if (mark === 3) {
+        		this.contents[tweetId - 1].own_like_check = 1
+        		this.contents[tweetId - 1].count_check += 1
+      		}
+    	},
+		onDeletegood: function(tweetId, mark) {
+      		const _this = this
+      		axios
+        		.delete('/api/content/deletegood/' + tweetId + '/' + mark)
+        		.then(function(resp) {})
+        		.catch(function(resp) {
+          			console.log(resp)
+        	})
+        	.finally(function() {
+          		//
+        	})
+      		if (mark === 1) {
+        		this.contents[tweetId - 1].own_like_good = 0
+        		this.contents[tweetId - 1].count_good -= 1
+      		}
+      		if (mark === 2) {
+        		this.contents[tweetId- 1].own_like_heart = 0
+        		this.contents[tweetId - 1].count_heart -= 1
+      		}
+      		if (mark === 3) {
+        		this.contents[tweetId - 1].own_like_check = 0
+        		this.contents[tweetId - 1].count_check -= 1
+      		}
+    	},
 		onResume(content) {
 			this.$router.push({ 
 				name: 'content.resume', 
 				params: { contentId: content.id }
 			})
 		},
-
-	},
+		visual: function(visable, number) {
+      		visable = !visable
+      		this.contents[number - 1].comment_visusal = visable
+		},
+		onPush: function() {
+      		if (this.push === '') {
+        		alert('通知はありません。')
+      		} else {
+        		alert(this.push)
+        		axios.delete('/api/notice/' + this.userid)
+        		this.isLoading = false
+        		location.reload()
+      		}
+    	},
+    },
 }
 </script>
 
@@ -217,8 +377,13 @@ export default {
 	max-height: 100%;
 	border-radius: 100%;
 }
-
 .card {
 	margin-bottom: 50px;
+}
+.comment {
+  padding: 10px;
+}
+.count {
+  	font-size:16px;
 }
 </style>

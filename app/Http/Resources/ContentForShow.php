@@ -19,6 +19,9 @@ class ContentForShow extends JsonResource
             'user_name' => isset($this->user) ? $this->user->name : null,
             'tag' => $this->tag,
             'content_text' => $this->content_text,
+            'id' => $this->id,
+            'created_at' => $this->created_at->format('Y/m/d H:i'),
+            'user_id' => $this->user_id,
         ];
     }
 }
