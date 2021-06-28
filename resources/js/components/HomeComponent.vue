@@ -45,7 +45,7 @@
 		<div class="card-body">
 			<div class="notices">
 				<h3 class="title-margin mt-3 mb-5">トップページ
-					<i class="fas fa-bell fa-1x" @click="onPush">
+					<i class="fas fa-bell fa-1x" @click="onPush"style="float:right">
 				  		<span v-if="push_count !== 0" class="count">{{ push_count }}</span>	
 					</i>
 				</h3>
@@ -83,7 +83,9 @@
 					<p class="card-text text-left" style="white-space: pre-wrap;">{{ content.content_text }}</p>
 				</div>
 				<p>
-					投稿日時：{{ content.created_at }}<br>
+					投稿日時：{{ content.created_at }}
+				</p>
+				<p v-if="content.comment_count!==0">
 					{{ content.comment_count }}件の返信があります。
 				</p>
 				<div class="card-footer btn-group" role="group"> 
@@ -171,6 +173,8 @@ export default {
       		check: 0,
 			userid: null,
       		username: '',
+			today: '',
+      		deleteid: 0,
 		}
 	},
 	mounted () {
@@ -242,17 +246,12 @@ export default {
 				this.notices = res1.data
 				this.isLoading = false
 				for (let i = 0; i < this.notices.length; i++){
-					if(this.notices[i].content_userid === this.userid &&this.notices[i].content_userid !== this.notices[i].respond_userid){
-						for (let j = 0; j < i; j++) {
-							if(this.notices[i].content_id === this.notices[j].content_id &&this.notices[i].respond_username === this.notices[j].respond_username){
-								this.check = 1
-							}
-						}
-						if (this.check === 0) {
-                			this.push +=this.notices[i].content_id +'のツイートに対して' +this.notices[i].respond_username +'から返信が来ました。\n'
-                			this.push_count += 1
-              			}
-              			this.check = 0
+					if (moment().diff(this.notices[i].created_at, 'days') >= 14) {
+              			this.deleteid = i + 1
+              			axios.delete('/api/notice/' + this.deleteid)
+            		} else if(this.notices[i].content_userid === this.userid &&this.notices[i].content_userid !== this.notices[i].respond_userid){
+                		this.push +=this.notices[i].created_at +' ' +this.notices[i].content_id +'のツイートに対して' +this.notices[i].respond_username +'から返信が来ました。\n'
+                		this.push_count += 1
 					}
 				}
 			}))
@@ -357,7 +356,6 @@ export default {
         		alert('通知はありません。')
       		} else {
         		alert(this.push)
-        		axios.delete('/api/notice/' + this.userid)
         		this.isLoading = false
       		}
     	},

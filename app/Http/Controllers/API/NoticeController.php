@@ -74,9 +74,9 @@ class NoticeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($userid)
+    public function destroy($id)
     {
-        $notice = Notice::where('content_userid', $userid);
+        $notice = Notice::where('id', $id)->first();
         $notice->delete();
    
        //session()->flash('success', 'You Unliked the Reply.');

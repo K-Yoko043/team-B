@@ -21,6 +21,7 @@ class NoticeForList extends JsonResource
             'content_username'=>$this->content->user->name,
             'respond_userid'=>$this->user_id,
             'respond_username'=>$this->user->name,
+            'created_at' => $this->created_at->format('Y/m/d H:i'),
         ];
     }
 }

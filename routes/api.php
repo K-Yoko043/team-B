@@ -56,6 +56,6 @@ Route::middleware(['auth:api'])->group(function () {
     //通知の自動追加・自動削除
     Route::get('notice', 'API\NoticeController@index');
     Route::post('notice/{contentid}/{contentuserid}', 'API\NoticeController@store');
-    Route::delete('notice/{userid}', 'API\NoticeController@destroy');
+    Route::delete('notice/{id}', 'API\NoticeController@destroy');
     Route::delete('notice/{userid}/{contentid}', 'API\NoticeController@destroycomment');
 });
