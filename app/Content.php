@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Support\Facades\DB;
 
 class Content extends Model
 {
@@ -16,6 +16,7 @@ class Content extends Model
     protected $casts = [
         'content_text' => 'string',
     ];
+    
 
     /**
      * ユーザを取得
@@ -42,6 +43,16 @@ class Content extends Model
     }
 
     public function isLiked($user_id)
+    {
+        return $this->likes()->where('user_id', $user_id)->exists();
+    }
+
+    // ブックマークを取得
+    public function Bookmark(){
+        return $this->hasMany('App\Bookmark');
+    }
+
+    public function is_bookmark($user_id)
     {
         return $this->likes()->where('user_id', $user_id)->exists();
     }

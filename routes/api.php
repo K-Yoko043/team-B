@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Bookmark as BookmarkResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,10 +37,16 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('content/{content}', 'API\ContentController@show');
     Route::put('content/{content}', 'API\ContentController@update');
     Route::delete('content/{content}', 'API\ContentController@destroy');
+    Route::get('content/add/{content}','API\ContentController@addbook');
+    Route::delete('content/delete/{content}','API\ContentController@deletebook');
+
     
     // プロフィール
     Route::get('profile', 'API\ProfileController@index');
     Route::get('profile/{profile}', 'API\ProfileController@show');
     Route::post('profile', 'API\ProfileController@store');
 
+    //ブックマーク
+    Route::get('Bookmark','API\BookmarkController@index');
+    Route::get('Bookmark/getuser','API\BookmarkController@getuser');
 });

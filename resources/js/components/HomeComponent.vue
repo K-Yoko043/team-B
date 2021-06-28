@@ -32,6 +32,7 @@
 						<!-- クリックされたらonSearch? -->
 					 	<a class="dropdown-item" href="#" @click="onSearch">フィロソフィー勉強会</a>
 						<a class="dropdown-item" href="#" @click="onSearch">NG勉強会</a>
+						<a class="dropdown-item" href="./bookmark" @click="onSearch">ブックマーク</a>
 						<a class="dropdown-item" href="#" v-show="own.is_admin">
 							<router-link
 								:to="{ name: 'setting' }"
@@ -73,6 +74,8 @@
 					<i v-if="content.user_name === own.name"
 						 class="far fa-edit clickable" @click="onResume(content)">
 					</i>
+					<i v-if="content.is_bookmark == 0" class="far fa-bookmark" @click="addbook(content.id)" style="color:#04B4AE;float:right;"></i>
+					<i v-else class="fas fa-bookmark" @click="deletebook(content.id)" v-cloak style="color:#04B4AE;float:right;"></i>
 				</h3>
 				<div class="card-body">
 					<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
@@ -171,6 +174,7 @@ export default {
 			this.content_text = data.content_text
 			this.totalItems = data.total_items
 			this.contents = data.contents
+
 			this.isLoading = false
 
 			const api = axios.create()
@@ -184,9 +188,9 @@ export default {
 
 		onSearch() {
 			this.$store.state.barcode = ''
-      this.offset = 0
-      this.currentPage = 0
-      this.getItems()
+      		this.offset = 0
+      		this.currentPage = 0
+      		this.getItems()
 		},
 
 		onResume(content) {
@@ -195,6 +199,16 @@ export default {
 				params: { contentId: content.id }
 			})
 		},
+
+		addbook: function(contentid){
+            axios.get('/api/content/add/' + contentid)
+            location.reload()
+        },
+
+        deletebook: function(contentid){
+            axios.delete('/api/content/delete/' + contentid)
+            location.reload()
+        },
 
 	},
 }

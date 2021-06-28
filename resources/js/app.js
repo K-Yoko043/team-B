@@ -109,6 +109,8 @@ const router = new VueRouter({
 		// いいね
 		{ name: 'content.like', path: '/content', component: require('./components/contents/Index.vue').default},
 
+		// ブックマーク
+        { name: 'bookmark', path:'/bookmark', component: require('./components/bookmarks/Index.vue').default},
 
 		// not found
 		{ path: '*', component: require('./components/commons/NotFoundComponent.vue').default },

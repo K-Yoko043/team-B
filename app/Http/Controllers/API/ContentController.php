@@ -12,6 +12,7 @@ use App\Goriller;
 use App\Content;
 use App\User;
 use App\Like;
+use App\Bookmark;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -144,5 +145,22 @@ class ContentController extends Controller
 			'result' => true,
 		]);
 	}
+
+	public function addbook($id){
+        $bookmark = new Bookmark;
+        $bookmark->content_id = $id;
+        $bookmark->user_id = Auth::user()->id;
+        $bookmark->save();
+        return response()->json([
+            'result' => true,
+        ]);
+    }
+    public function deletebook($id){
+        $bookmark=Bookmark::where('content_id',$id)->where('user_id',Auth::user()->id);
+        $bookmark->delete();
+        return response()->json([
+            'result' => true,
+        ]);
+    }
 
 }
