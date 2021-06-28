@@ -59,8 +59,12 @@
 						>
 						<i class="fas fa-user-edit"></i><br>Myプロフィール</router-link
 				>
-				<i class="fas fa-bell fa-2x" @click="onPush"><sup class="count" v-if="push_count !== 0">{{ push_count }}</sup></i>
 			</div>
+			<div style="float:right" class="notices">
+      			<i class="fas fa-bell fa-2x" @click="onPush">
+				  	<span v-if="push_count !== 0" class="count">{{ push_count }}</span>	
+				</i>
+    		</div>
 		</div>
 		<div>
 		</div>
@@ -80,7 +84,10 @@
 					<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
 					<p class="card-text text-left" style="white-space: pre-wrap;">{{ content.content_text }}</p>
 				</div>
-				<p>投稿日時：{{ content.created_at }}</p>
+				<p>
+					投稿日時：{{ content.created_at }}<br>
+					{{ content.comment_count }}件の返信。
+				</p>
 				<div class="card-footer btn-group" role="group"> 
 					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary" @click="onAddgood(content.id, 1)">
             			<a slot="icon" class="fas fa-thumbs-up fa-lg" style="color: #c0c0c0" outline="none"> </a>
@@ -386,5 +393,23 @@ export default {
 }
 .count {
   	font-size:16px;
+}
+.notices {
+  position: relative; /* 基準値とする */
+}
+.notices span {
+  position: absolute; /* 相対位置に指定 */
+  top: -10px; /* 表示位置を上から-10pxの位置にする */
+  left: calc(100% - 10px); /* 表示位置を右から内側に10pxの位置 */
+  color: #fff; /* 文字色を白に指定 */
+  //font-weight: bold; /* 太文字にする */
+  line-height: 20px; /* 行の高さを指定 */
+  font-size: 1px;
+  text-align: center; /* 文字を中央揃えにする */
+  background: #ff0000; /* 背景色を赤色に指定 */
+  border-radius: 10px; /* line-heightの半分の角丸を指定 */
+  min-width: 20px; /* 最低幅を指定 */
+  padding: 0 3px; /* 左右に少しだけ余白を設定 */
+  box-sizing: border-box; /* 計算しやすいように */
 }
 </style>
