@@ -53,7 +53,7 @@ public function store(Request $request)
     'file.required' => '画像が選択されていません。',
     'file.image' => '画像ファイルではありません。',
   ]);
-
+  \Log::info('aaa');
   \Log::info($request->all());
   if (request()->file) {
     $file_name = time() . '.' . request()->file->getClientOriginalName();
@@ -64,6 +64,7 @@ public function store(Request $request)
     $image = new Profile;
     $image->path = 'storage/' . $file_name;
     $image->save();
+
   });
   
   return response()->json([

@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-	<div class="card text-center mx-auto" style="max-width: 800px">
+	<div class="card text-center mx-auto">
 
 		<div class="fixed-top">
 			<div class="form-inline justify-content-center">
@@ -30,8 +30,8 @@
 							>
 						</a>
 						<!-- クリックされたらonSearch? -->
-					 	<a class="dropdown-item" href="#" @click="onSearch">フィロソフィー勉強会</a>
-						<a class="dropdown-item" href="#" @click="onSearch">NG勉強会</a>
+					 	<label class="dropdown-item" href="#" @click="onTagSearch">フィロソフィー勉強会</label>
+						<a class="dropdown-item" href="#" @click="onTagSearch">NG勉強会</a>
 						<a class="dropdown-item" href="#" v-show="own.is_admin">
 							<router-link
 								:to="{ name: 'setting' }"
@@ -62,7 +62,7 @@
 			</div>
 		</div>
 
-		<table class="table table-striped" 	v-if="contents">
+		<table class="table table-striped" v-if="contents">
 			<div v-for="content in sortContents"
 				:key="content.id" 
 				class="card bg-white border-info"
@@ -100,26 +100,10 @@
 						<i class="far fa-lg fa-thumbs-up"></i> いいね
 					</button>
 					
-					<button class="btn btn-outline-info btn-sm" data-toggle="collapse" data-target="#reply">
-						<i class="far fa-lg fa-comment"></i> コメントする
+					<button class="btn btn-outline-info btn-sm ml-10" @click="onComment(content)">
+						<i class="far fa-lg fa-comment-dots"></i> コメントする
 					</button>
-					<div id="reply" class="collapse">
- 						<div class="form-group">
-							<label>返信者</label>
-							<input v-model="own.goriller_name" class="text-center form-control" readonly="readonly">
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<textarea class="form-control" v-model="content.comments" style="height: 300px;" placeholder="コメントする..."></textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<button v-show="content.comments != ''" @click="onComment(content.id)" 
-								type="button" class="btn btn-sm btn-info">
-								コメントする
-							</button>
-						</div>
-					</div>
+				
 				</div>
 			</div>
 		</table>
@@ -139,6 +123,7 @@ export default {
 			contents: [],
 			gorillers: [],
 			content_text: '',
+			tags: [],
 			tag: '',
 			good_count: '',
 			keyword: '',
@@ -162,7 +147,7 @@ export default {
 			return this.$store.state.user
 		},
 		sortContents() {
-			return this.contents.reverse();
+			return this.contents.slice().reverse();
 		},
 	},
 	methods: {
@@ -183,7 +168,6 @@ export default {
 					sort: this.sort,
 					keyword: this.keyword,
 					content_text: this.content_text,
-					tag: this.tag,
 				},
 			})
 			this.content_text = data.content_text
@@ -207,6 +191,18 @@ export default {
       this.getItems()
 		},
 
+		onTagSearch() {
+			this.isLoading = true;
+			const { data } = axios.get('/api/tag', {
+				params: {
+					tag: this.tag,
+				},
+			})
+			this.tags = data.tags
+			// this.tags = data.tags
+			this.isLoading = false
+		},
+
 		onResume(content) {
 			this.$router.push({ 
 				name: 'content.resume', 
@@ -214,7 +210,12 @@ export default {
 			})
 		},
 
-
+		onComment(content) {
+			this.$router.push({
+				name: 'comment',
+				params: { contentId: content.id }
+			})
+		},
 
 	},
 }

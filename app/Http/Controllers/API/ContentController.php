@@ -21,6 +21,18 @@ class ContentController extends Controller
 		$this->middleware(['auth', 'verified'])->only(['like', 'unlike']);
 	}
 
+	public function getLink($comment)
+	{
+		$pattern = '/https?:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+/';
+		$comment = preg_replace_callback($pattern, 'replace', htmlspecialchars($comment));
+		return $comment;
+	}
+
+	public function replace($matches)
+	{
+		return '<a href="'.$matches[0].'">'.$matches[0].'</a>';
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -30,6 +42,8 @@ class ContentController extends Controller
 	{
 		$keyword = $request->keyword;
 		$content_text = $request->content_text;	
+
+		// $content = $this->getLink($content_text);
 
 		$rets = [];
 		if (!empty($keyword)) {
@@ -50,14 +64,19 @@ class ContentController extends Controller
 		if (!empty($rets)) {
 			$contents = [];
 			foreach ($rets as $ret) {
-				$contents = Content::where('content_text', 'like', '%'.$ret.'%')
-					->get();
+				// $contents = Content::where('content_text', 'like', '%'.$ret.'%')
+				// 	->get();
+				// $contents = Content::whereRaw('match (`content_text`) against (+'.$ret.' in boolean mode)');
+				$contents = Content::whereRaw("match(content_text) against(?)", $ret)
+				->get();
+				\Log::info('***********************loop***********************');
 			}
 		} else {
 			$contents = Content::all();
 		}
 
-		\Log::info($contents);
+		\Log::info($rets);
+
 
 		return response()->json([
 			'content_text' => $content_text,
@@ -138,6 +157,19 @@ class ContentController extends Controller
 		return response()->json([
 			'result' => true,
 		]);
+	}
+
+	public function showTag(Request $request)
+	{
+		$tag = $request->tag;
+
+		$tags = Content::where('tag', '=', '%'.$tag.'%')->get();
+		$tag = Content::groupby('tag')->pluck('tag');
+
+	return response()->json([
+		// 'tag' => $tag,
+		'tags' => ContentForListResource::collection($tags),
+	]);
 	}
 
 }

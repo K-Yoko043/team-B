@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
@@ -17,6 +18,16 @@ class Content extends Model
         'content_text' => 'string',
     ];
 
+    /**
+     * テキスト内のリンク部分を取得
+     */
+    // public function getBodyWithLinkAttribute(): string
+    // {
+    //     $pattern = '/((?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
+    //     $replace = '<a href="$1">$1</a>';
+    //     return preg_replace($pattern, $replace, $this->body);
+    // }
+    
     /**
      * ユーザを取得
      */

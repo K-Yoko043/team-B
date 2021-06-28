@@ -86,7 +86,12 @@ const router = new VueRouter({
 
 		// プロフィール
 		{ name: 'profile', path: '/profile', component: require('./components/profiles/Index.vue').default },
-		{ name: 'profile.upload', path: '/profile/upload/:goriller_id', component: require('./components/profiles/UploadImage.vue').default },
+		{ 
+			name: 'profile.upload',
+		  path: '/profile/upload/:goriller_id', 
+			component: require('./components/profiles/UploadImage.vue').default,
+			props: true
+		},
 
 		// 設定
 		{ name: 'setting', path: '/setting', component: require('./components/settings/Index.vue').default },
@@ -94,7 +99,12 @@ const router = new VueRouter({
 		// ゴリラー
 		{ name: 'goriller', path: '/goriller', component: require('./components/gorillers/Index.vue').default },
 		{ name: 'goriller.create', path: '/goriller/create', component: require('./components/gorillers/CreateUpdate.vue').default },
-		{ name: 'goriller.show', path: '/goriller/show/:goriller_id', component: require('./components/gorillers/CreateUpdate.vue').default, props: true },
+		{
+			 name: 'goriller.show', 
+			 path: '/goriller/show/:goriller_id', 
+			 component: require('./components/gorillers/CreateUpdate.vue').default, 
+			 props: true 
+		},
 
 		// 投稿内容
 		{ name: 'content', path: '/content', component: require('./components/contents/Index.vue').default},
@@ -105,6 +115,15 @@ const router = new VueRouter({
 			component: require('./components/contents/CreateUpdate.vue').default,
 			props: true,
 		},
+
+		// コメント（返信）内容
+		{ 
+			name: 'comment', 
+			path: '/comment/:contentId', 
+			component: require('./components/comments/Index.vue').default,
+			props: true,
+		},
+
 
 		// いいね
 		{ name: 'content.like', path: '/content', component: require('./components/contents/Index.vue').default},
