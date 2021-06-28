@@ -44,7 +44,13 @@
 		</div>
 
 		<div class="card-body">
-			<h3 class="title-margin mt-3 mb-5">トップページ</h3>
+			<div class="notices">
+				<h3 class="title-margin mt-3 mb-5">トップページ
+					<i class="fas fa-bell fa-1x" @click="onPush">
+				  		<span v-if="push_count !== 0" class="count">{{ push_count }}</span>	
+					</i>
+				</h3>
+    		</div>
 			<div class="d-flex flex-wrap justify-content-center mb-2">
 				<router-link
 					:to="{ name: 'content' }"
@@ -58,13 +64,8 @@
 						class="btn btn-outline-success btn-lg mb-3 mr-3 text-nowrap"
 						>
 						<i class="fas fa-user-edit"></i><br>Myプロフィール</router-link
-				>
+				>	
 			</div>
-			<div style="float:right" class="notices">
-      			<i class="fas fa-bell fa-2x" @click="onPush">
-				  	<span v-if="push_count !== 0" class="count">{{ push_count }}</span>	
-				</i>
-    		</div>
 		</div>
 		<div>
 		</div>
@@ -86,7 +87,7 @@
 				</div>
 				<p>
 					投稿日時：{{ content.created_at }}<br>
-					{{ content.comment_count }}件の返信。
+					{{ content.comment_count }}件の返信があります。
 				</p>
 				<div class="card-footer btn-group" role="group"> 
 					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary" @click="onAddgood(content.id, 1)">
@@ -142,7 +143,6 @@
 				</div>
 			</div>
 		</table>
-
 	</div>
 </div>
 </template>
