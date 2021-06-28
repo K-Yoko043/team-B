@@ -10,7 +10,6 @@
 					</div>
 					<button type="button" class="btn btn-primary" @click="onSearch">検索</button>
 				</div>
-
 				<div class="dropdown text-right">
 					<button class="btn btn-outline-dark dropdown-toggle" type="button"
 						id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -67,10 +66,8 @@
 				>	
 			</div>
 		</div>
-		<div>
-		</div>
 		<table class="table table-striped">
-			<div v-for="content in sortContents"
+			<div v-for="(content,index) in sortContents"
 				:key="content.id" 
 				class="card bg-white border-info"
 			>
@@ -90,27 +87,27 @@
 					{{ content.comment_count }}件の返信があります。
 				</p>
 				<div class="card-footer btn-group" role="group"> 
-					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary" @click="onAddgood(content.id, 1)">
+					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary" @click="onAddgood(index,content.id, 1)">
             			<a slot="icon" class="fas fa-thumbs-up fa-lg" style="color: #c0c0c0" outline="none"> </a>
             			{{ content.count_good }}
           			</button>
-          			<button v-else class="btn btn-outline-primary" @click="onDeletegood(content.id, 1)">
+          			<button v-else class="btn btn-outline-primary" @click="onDeletegood(index,content.id, 1)">
             			<a slot="icon" class="fas fa-thumbs-up fa-lg" style="color: #00bfff" outline="none"> </a>
             			{{ content.count_good }}
           			</button>
-          			<button v-if="content.own_like_heart === 0" class="btn btn-outline-danger" @click="onAddgood(content.id, 2)">
+          			<button v-if="content.own_like_heart === 0" class="btn btn-outline-danger" @click="onAddgood(index,content.id, 2)">
             			<a slot="icon" class="far fa-heart fa-lg" style="color: #ff0000" outline="none"> </a>
             			{{ content.count_heart }}
           			</button>
-          			<button v-else class="btn btn-outline-danger" @click="onDeletegood(content.id, 2)">
+          			<button v-else class="btn btn-outline-danger" @click="onDeletegood(index,content.id, 2)">
             			<a slot="icon" class="fas fa-heart fa-lg" style="color: #ff0000" outline="none"> </a>
             			{{ content.count_heart }}
           			</button>
-          			<button v-if="content.own_like_check === 0" class="btn btn-outline-success" @click="onAddgood(content.id, 3)">
+          			<button v-if="content.own_like_check === 0" class="btn btn-outline-success" @click="onAddgood(index,content.id, 3)">
             			<a slot="icon" class="far fa-check-square fa-lg" style="color: #c0c0c0" outline="none"> </a>
             			{{ content.count_check }}
           			</button>
-          			<button v-else class="btn btn-outline-success" @click="onDeletegood(content.id, 3)">
+          			<button v-else class="btn btn-outline-success" @click="onDeletegood(index,content.id, 3)">
             			<a slot="icon" class="fas fa-check-square fa-lg" style="color: #00ff00" outline="none"> </a>
             			{{ content.count_check }}
           			</button>
@@ -298,7 +295,7 @@ export default {
         		})
       		location.reload()
     	},
-		onAddgood: function(tweetId, mark) {
+		onAddgood: function(Index,tweetId, mark) {
       		this.invalid = false
       		this.errorMessage = ''
       		const _this = this
@@ -309,19 +306,19 @@ export default {
           			console.log(resp)
         	})
       		if (mark === 1) {
-        		this.contents[tweetId - 1].own_like_good = 1
-        		this.contents[tweetId - 1].count_good += 1
+        		this.contents[this.contents.length-Index-1].own_like_good = 1
+        		this.contents[this.contents.length-Index-1].count_good += 1
       		}
       		if (mark === 2) {
-        		this.contents[tweetId - 1].own_like_heart = 1
-        		this.contents[tweetId - 1].count_heart += 1
+        		this.contents[this.contents.length-Index-1].own_like_heart = 1
+        		this.contents[this.contents.length-Index-1].count_heart += 1
       		}
       		if (mark === 3) {
-        		this.contents[tweetId - 1].own_like_check = 1
-        		this.contents[tweetId - 1].count_check += 1
+        		this.contents[this.contents.length-Index-1].own_like_check = 1
+        		this.contents[this.contents.length-Index-1].count_check += 1
       		}
     	},
-		onDeletegood: function(tweetId, mark) {
+		onDeletegood: function(Index,tweetId, mark) {
       		const _this = this
       		axios
         		.delete('/api/content/deletegood/' + tweetId + '/' + mark)
@@ -333,16 +330,16 @@ export default {
           		//
         	})
       		if (mark === 1) {
-        		this.contents[tweetId - 1].own_like_good = 0
-        		this.contents[tweetId - 1].count_good -= 1
+        		this.contents[this.contents.length-Index-1].own_like_good = 0
+        		this.contents[this.contents.length-Index-1].count_good -= 1
       		}
       		if (mark === 2) {
-        		this.contents[tweetId- 1].own_like_heart = 0
-        		this.contents[tweetId - 1].count_heart -= 1
+        		this.contents[this.contents.length-Index-1].own_like_heart = 0
+        		this.contents[this.contents.length-Index-1].count_heart -= 1
       		}
       		if (mark === 3) {
-        		this.contents[tweetId - 1].own_like_check = 0
-        		this.contents[tweetId - 1].count_check -= 1
+        		this.contents[this.contents.length-Index-1].own_like_check = 0
+        		this.contents[this.contents.length-Index-1].count_check -= 1
       		}
     	},
 		onResume(content) {
