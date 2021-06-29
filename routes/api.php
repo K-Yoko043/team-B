@@ -58,4 +58,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('notice/{contentid}/{contentuserid}', 'API\NoticeController@store');
     Route::delete('notice/{id}', 'API\NoticeController@destroy');
     Route::delete('notice/{userid}/{contentid}', 'API\NoticeController@destroycomment');
+    //いいねのルーティング設定設定
+    Route::get('like', 'API\LikeController@index');
 });

@@ -30,6 +30,9 @@ class ContentForList extends JsonResource
             'count_check'=>$this->likes->where('reaction_no',3)->count(),
             'comment_visusal'=>false,
             'comment_count'=>$this->responds->where('content_id',$this->id)->count(),
+            'member_good'=>'',
+            'member_heart'=>'',
+            'member_check'=>'',
         ];
     }
 }

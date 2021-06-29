@@ -88,30 +88,36 @@
 				<p v-if="content.comment_count!==0">
 					{{ content.comment_count }}件の返信があります。
 				</p>
-				<div class="card-footer btn-group" role="group"> 
-					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary" @click="onAddgood(index,content.id, 1)">
+				<div class="card-footer btn-group checkparent" role="group"> 
+					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary checkchild1" @click="onAddgood(index,content.id, 1)">
             			<a slot="icon" class="fas fa-thumbs-up fa-lg" style="color: #c0c0c0" outline="none"> </a>
             			{{ content.count_good }}
+						<p v-if="content.count_good !== 0" class="fukidashi1">{{ content.member_good }}がいいねを押しました。</p>
           			</button>
-          			<button v-else class="btn btn-outline-primary" @click="onDeletegood(index,content.id, 1)">
+          			<button v-else class="btn btn-outline-primary checkchild1" @click="onDeletegood(index,content.id, 1)">
             			<a slot="icon" class="fas fa-thumbs-up fa-lg" style="color: #00bfff" outline="none"> </a>
             			{{ content.count_good }}
+						<p v-if="content.count_good !== 0" class="fukidashi1">{{ content.member_good }}がいいねを押しました。</p>
           			</button>
-          			<button v-if="content.own_like_heart === 0" class="btn btn-outline-danger" @click="onAddgood(index,content.id, 2)">
+          			<button v-if="content.own_like_heart === 0" class="btn btn-outline-danger checkchild2" @click="onAddgood(index,content.id, 2)">
             			<a slot="icon" class="far fa-heart fa-lg" style="color: #ff0000" outline="none"> </a>
             			{{ content.count_heart }}
+						<p v-if="content.count_heart !== 0" class="fukidashi2">{{ content.member_heart }}がハートを押しました。</p>
           			</button>
-          			<button v-else class="btn btn-outline-danger" @click="onDeletegood(index,content.id, 2)">
+          			<button v-else class="btn btn-outline-danger checkchild2" @click="onDeletegood(index,content.id, 2)">
             			<a slot="icon" class="fas fa-heart fa-lg" style="color: #ff0000" outline="none"> </a>
             			{{ content.count_heart }}
+						<p v-if="content.count_heart !== 0" class="fukidashi2">{{ content.member_heart }}がハートを押しました。</p>
           			</button>
-          			<button v-if="content.own_like_check === 0" class="btn btn-outline-success" @click="onAddgood(index,content.id, 3)">
+          			<button v-if="content.own_like_check === 0" class="btn btn-outline-success checkchild3" @click="onAddgood(index,content.id, 3)">
             			<a slot="icon" class="far fa-check-square fa-lg" style="color: #c0c0c0" outline="none"> </a>
             			{{ content.count_check }}
+						<p v-if="content.count_check !== 0" class="fukidashi3">{{ content.member_check }}がチェックを押しました。</p>
           			</button>
-          			<button v-else class="btn btn-outline-success" @click="onDeletegood(index,content.id, 3)">
+          			<button v-else class="btn btn-outline-success checkchild3" @click="onDeletegood(index,content.id, 3)">
             			<a slot="icon" class="fas fa-check-square fa-lg" style="color: #00ff00" outline="none"> </a>
             			{{ content.count_check }}
+						<p v-if="content.count_check !== 0" class="fukidashi3">{{ content.member_check }}がチェックを押しました。</p>
           			</button>
           			<button class="btn btn-outline-info btn-sm" data-toggle="collapse" @click="onAddrespond(content.id)">
             			<i class="far fa-lg fa-comment"></i> 返信する
@@ -158,6 +164,7 @@ export default {
 			gorillers: [],
 			responds:[],
 			notices:[],
+			likes: [],
 			content_text: '',
 			tag: '',
 			good_count: '',
@@ -262,6 +269,22 @@ export default {
           			this.isLoading = false
         		}),
       		)
+			const api6 = axios.create()
+      			axios.all([api6.get('/api/like')]).then(
+        			axios.spread((res1, res2, res3, res4) => {
+          			this.likes = res1.data
+					for (let i = 0; i < this.likes.length; i++) {
+            			if (this.likes[i].reaction_no === 1) {
+              				this.contents[this.likes[i].content_id - 1].member_good += this.likes[i].user_name + 'さん,'
+            			} else if (this.likes[i].reaction_no === 2) {
+              				this.contents[this.likes[i].content_id - 1].member_heart += this.likes[i].user_name + 'さん,'
+            			} else {
+              				this.contents[this.likes[i].content_id - 1].member_check += this.likes[i].user_name + 'さん,'
+            			}
+          			}
+          			this.isLoading = false
+        		}),
+      		)
 		},
 		onSearch() {
 			this.$store.state.barcode = ''
@@ -307,14 +330,18 @@ export default {
       		if (mark === 1) {
         		this.contents[this.contents.length-Index-1].own_like_good = 1
         		this.contents[this.contents.length-Index-1].count_good += 1
+				this.contents[this.contents.length-Index-1].member_good += this.username + 'さん,'
+				alert(this.contents.length-Index-1)
       		}
       		if (mark === 2) {
         		this.contents[this.contents.length-Index-1].own_like_heart = 1
         		this.contents[this.contents.length-Index-1].count_heart += 1
+				this.contents[this.contents.length-Index-1].member_heart += this.username + 'さん,'
       		}
       		if (mark === 3) {
         		this.contents[this.contents.length-Index-1].own_like_check = 1
         		this.contents[this.contents.length-Index-1].count_check += 1
+				this.contents[this.contents.length-Index-1].member_check += this.username + 'さん,'
       		}
     	},
 		onDeletegood: function(Index,tweetId, mark) {
@@ -331,14 +358,17 @@ export default {
       		if (mark === 1) {
         		this.contents[this.contents.length-Index-1].own_like_good = 0
         		this.contents[this.contents.length-Index-1].count_good -= 1
+				this.contents[this.contents.length-Index-1].member_good = this.contents[this.contents.length-Index-1].member_good.replace(this.username + 'さん,','',)
       		}
       		if (mark === 2) {
         		this.contents[this.contents.length-Index-1].own_like_heart = 0
         		this.contents[this.contents.length-Index-1].count_heart -= 1
+				this.contents[this.contents.length-Index-1].member_heart = this.contents[this.contents.length-Index-1].member_heart.replace(this.username + 'さん,','',)
       		}
       		if (mark === 3) {
         		this.contents[this.contents.length-Index-1].own_like_check = 0
         		this.contents[this.contents.length-Index-1].count_check -= 1
+				this.contents[this.contents.length-Index-1].member_check = this.contents[this.contents.length-Index-1].member_check.replace(this.username + 'さん,','',)
       		}
     	},
 		onResume(content) {
@@ -406,5 +436,95 @@ export default {
   min-width: 20px; /* 最低幅を指定 */
   padding: 0 3px; /* 左右に少しだけ余白を設定 */
   box-sizing: border-box; /* 計算しやすいように */
+}
+.fukidashi1 {
+  /*表示位置を指定します*/
+  position: absolute;
+  top: -30px;
+  left: -15px;
+
+  /*非表示にしておきます*/
+  display: none;
+  opacity: 0;
+
+  /*表示スタイルを指定します*/
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: blue;
+  /*影をつけて見栄えを良くします*/
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 1px 0 0 rgba(255, 255, 255, 0.3), inset -1px 0 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+
+  /*アニメーションを指定します*/
+  animation-duration: 0.3s;
+  animation-name: show-balloon;
+}
+.fukidashi2 {
+  /*表示位置を指定します*/
+  position: absolute;
+  top: -30px;
+  left: -15px;
+
+  /*非表示にしておきます*/
+  display: none;
+  opacity: 0;
+
+  /*表示スタイルを指定します*/
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: red;
+  /*影をつけて見栄えを良くします*/
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 1px 0 0 rgba(255, 255, 255, 0.3), inset -1px 0 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+
+  /*アニメーションを指定します*/
+  animation-duration: 0.3s;
+  animation-name: show-balloon;
+}
+.fukidashi3 {
+  /*表示位置を指定します*/
+  position: absolute;
+  top: -30px;
+  left: -15px;
+
+  /*非表示にしておきます*/
+  display: none;
+  opacity: 0;
+
+  /*表示スタイルを指定します*/
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  background-color: green;
+  /*影をつけて見栄えを良くします*/
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 1px 0 0 rgba(255, 255, 255, 0.3), inset -1px 0 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+
+  /*アニメーションを指定します*/
+  animation-duration: 0.3s;
+  animation-name: show-balloon;
+}
+.checkparent .checkchild1:hover .fukidashi1 {
+  /*表示するようにします*/
+  display: inline-block;
+  opacity: 1;
+  top: -40px;
+}
+.checkparent .checkchild2:hover .fukidashi2 {
+  /*表示するようにします*/
+  display: inline-block;
+  opacity: 1;
+  top: -40px;
+}
+.checkparent .checkchild3:hover .fukidashi3 {
+  /*表示するようにします*/
+  display: inline-block;
+  opacity: 1;
+  top: -40px;
 }
 </style>
