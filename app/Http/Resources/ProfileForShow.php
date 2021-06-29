@@ -17,6 +17,7 @@ class ContentForShow extends JsonResource
         return [
             'id' => $this->id,
             'path' => $this->path,
+            'goriller_id' => isset($this->goriller) ? $this->goriller->id : null,
         ];
     }
 }

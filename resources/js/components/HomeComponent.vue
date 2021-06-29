@@ -1,50 +1,54 @@
 <template>
 <div class="container">
-	<div class="card text-center mx-auto" style="max-width: 800px">
-
-		<div class="fixed-top">
-			<div class="form-inline justify-content-center">
-				<div class="form-inline text-left">
-					<div class="form-group">
-						<input class="form-control" type="text" v-model="keyword" placeholder="キーワード検索">
-					</div>
-					<button type="button" class="btn btn-primary" @click="onSearch">検索</button>
-				</div>
-
-				<div class="dropdown text-right">
-					<button class="btn btn-outline-dark dropdown-toggle" type="button"
-						id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fas fa-sliders-h"></i>
-					</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<a class="dropdown-item" href="#">
-							<router-link
-								:to="{ name: 'content' }"
-								>新規投稿</router-link
-							>
-						</a>
-						<a class="dropdown-item" href="#">
-							<router-link
-								:to="{ name: 'profile' }"
-								>プロフィール編集</router-link
-							>
-						</a>
-						<!-- クリックされたらonSearch? -->
-					 	<a class="dropdown-item" href="#" @click="onSearch">フィロソフィー勉強会</a>
-						<a class="dropdown-item" href="#" @click="onSearch">NG勉強会</a>
-						<a class="dropdown-item" href="#" v-show="own.is_admin">
-							<router-link
-								:to="{ name: 'setting' }"
-								>設定管理</router-link
-							>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-
+	<div class="card text-center mx-auto">
 		<div class="card-body">
-			<h3 class="title-margin mt-3 mb-5">トップページ</h3>
+
+				<div class="form-inline">
+					<div class="form-inline" style="overflow: hidden;">
+						<div class="form-group">
+							<input class="form-control" type="text" v-model="keyword" placeholder="キーワード検索">
+						</div>
+						<button type="button" class="btn btn-primary" @click="onSearch">
+							<i class="fas fa-search"></i>
+						</button>
+					</div>
+
+					<div class="dropdown dropleft col text-right">
+						<button class="btn btn-outline-dark dropdown-toggle" type="button"
+							id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="fas fa-sliders-h"></i>
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="#">
+								<router-link
+									:to="{ name: 'content' }"
+									>新規投稿</router-link
+								>
+							</a>
+							<a class="dropdown-item" href="#">
+								<router-link
+									:to="{ name: 'profile' }"
+									>プロフィール編集</router-link
+								>
+							</a>
+							<!-- クリックされたらonSearch? -->
+							<button class="dropdown-item" type="button" @click="onTagSearch('フィロソフィー')">フィロソフィー勉強会</button>
+							<button class="dropdown-item" type="button" @click="onTagSearch('NG')">NG勉強会</button>
+							<button class="dropdown-item" type="button" @click="onTagSearch('')">トップに戻る</button>
+							<a class="dropdown-item" href="#" v-show="own.is_admin">
+								<router-link
+									:to="{ name: 'setting' }"
+									>設定管理</router-link
+								>
+							</a>
+						</div>
+					</div>
+				</div>
+
+			<div class="form-group">
+			<img class="img mt-3" src="/image/logo.jpg">
+			</div>
+
 			<div class="d-flex flex-wrap justify-content-center mb-2">
 				<router-link
 					:to="{ name: 'content' }"
@@ -62,7 +66,7 @@
 			</div>
 		</div>
 
-		<table class="table table-striped" 	v-if="contents">
+		<table class="table table-striped" v-if="contents">
 			<div v-for="content in sortContents"
 				:key="content.id" 
 				class="card bg-white border-info"
@@ -83,7 +87,8 @@
 						<div class="readmore-content">
 							<p class="card-text text-left" 
 								style="white-space: pre-wrap;"
-							>{{ content.content_text }}
+							>
+							{{ content.content_text }}
 							</p>
 						</div>
 						<label class="readmore-label" for="check1" v-if="content.content_text.length > 100"></label>
@@ -100,26 +105,10 @@
 						<i class="far fa-lg fa-thumbs-up"></i> いいね
 					</button>
 					
-					<button class="btn btn-outline-info btn-sm" data-toggle="collapse" data-target="#reply">
-						<i class="far fa-lg fa-comment"></i> コメントする
+					<button class="btn btn-outline-info btn-sm ml-10" @click="onComment(content)">
+						<i class="far fa-lg fa-comment-dots"></i> コメントする
 					</button>
-					<div id="reply" class="collapse">
- 						<div class="form-group">
-							<label>返信者</label>
-							<input v-model="own.goriller_name" class="text-center form-control" readonly="readonly">
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<textarea class="form-control" v-model="content.comments" style="height: 300px;" placeholder="コメントする..."></textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<button v-show="content.comments != ''" @click="onComment(content.id)" 
-								type="button" class="btn btn-sm btn-info">
-								コメントする
-							</button>
-						</div>
-					</div>
+				
 				</div>
 			</div>
 		</table>
@@ -139,7 +128,6 @@ export default {
 			contents: [],
 			gorillers: [],
 			content_text: '',
-			tag: '',
 			good_count: '',
 			keyword: '',
 			is_liked: false,
@@ -162,7 +150,7 @@ export default {
 			return this.$store.state.user
 		},
 		sortContents() {
-			return this.contents.reverse();
+			return this.contents.slice().reverse();
 		},
 	},
 	methods: {
@@ -183,7 +171,6 @@ export default {
 					sort: this.sort,
 					keyword: this.keyword,
 					content_text: this.content_text,
-					tag: this.tag,
 				},
 			})
 			this.content_text = data.content_text
@@ -207,6 +194,23 @@ export default {
       this.getItems()
 		},
 
+		async onTagSearch(selected_tag) {
+			this.isLoading = true;
+			if (selected_tag != "") {
+				alert(selected_tag +"勉強会の投稿のみ表示します。")
+			} else {
+				alert("トップに戻ります。")
+			}
+			const { data } = await axios.get('/api/tag', {
+				params: {
+					tag: selected_tag,
+				},
+			})
+			this.contents = data.contents
+			// this.tags = data.tags
+			this.isLoading = false
+		},
+
 		onResume(content) {
 			this.$router.push({ 
 				name: 'content.resume', 
@@ -214,7 +218,12 @@ export default {
 			})
 		},
 
-
+		onComment(content) {
+			this.$router.push({
+				name: 'comment',
+				params: { contentId: content.id }
+			})
+		},
 
 	},
 }
@@ -236,6 +245,14 @@ export default {
 	max-width: 100%;
 	max-height: 100%;
 	border-radius: 100%;
+}
+.img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+	// border-radius: 150%;
+	// border:	2px solid rgb(170, 170, 255)
 }
 
 .card {

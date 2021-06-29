@@ -15,7 +15,7 @@
 
 					<div class="photo-form text-center">
 						<img class="img" v-if="profile.path" src="/storage/1623910044柴犬.jpg">
-						<img class="img" v-else src="/storage/1623910044柴犬.jpg">
+						<img class="img" v-else src="/image/gorilla.png">
 						<!-- <router-link
 							:to="{ name: 'profile.upload'}"
 							class="btn btn-secondary"
@@ -125,6 +125,6 @@ export default {
 	max-height: 100%;
 	text-align: center;
 	border-radius: 150%;
-	border: 3px solid greenyellow;
+	border: 2px solid rgb(60, 100, 0);
 }
 </style>

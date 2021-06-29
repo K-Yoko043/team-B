@@ -42,10 +42,8 @@ class ProfileController extends Controller
  * @param  \Illuminate\Http\Request  $request
  * @return \Illuminate\Http\Response
  */
-public function store(Request $request)
+public function store(Request $request, Goriller $goriller)
 {
-
-  
   $this->validate($request, [
     'file' => 'required | image',
     ], [
@@ -54,16 +52,22 @@ public function store(Request $request)
     'file.image' => '画像ファイルではありません。',
   ]);
 
+  \Log::info('aaa');
   \Log::info($request->all());
+  \Log::info('bbb');
+  \Log::info(Profile::find($request->id));
+
   if (request()->file) {
     $file_name = time() . '.' . request()->file->getClientOriginalName();
     request()->file->storeAs('public', $file_name);
   }
 
-  DB::transaction(function () use ($request, $file_name) {  
+
+  DB::transaction(function () use ($request, $file_name, $goriller) {  
     $image = new Profile;
     $image->path = 'storage/' . $file_name;
     $image->save();
+
   });
   
   return response()->json([

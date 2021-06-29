@@ -22,6 +22,8 @@ class CreateContentsTable extends Migration
             $table->unsignedinteger('position')->nullable();
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE contents ADD FULLTEXT index content_text (`content_text`) with parser ngram');
     }
 
     /**
