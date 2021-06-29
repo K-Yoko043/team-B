@@ -331,7 +331,6 @@ export default {
         		this.contents[this.contents.length-Index-1].own_like_good = 1
         		this.contents[this.contents.length-Index-1].count_good += 1
 				this.contents[this.contents.length-Index-1].member_good += this.username + 'さん,'
-				alert(this.contents.length-Index-1)
       		}
       		if (mark === 2) {
         		this.contents[this.contents.length-Index-1].own_like_heart = 1
@@ -451,6 +450,8 @@ export default {
   padding: 5px;
   border-radius: 5px;
   color: white;
+  width:300px;
+  font-size:12px;
   background-color: blue;
   /*影をつけて見栄えを良くします*/
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8),
@@ -465,7 +466,7 @@ export default {
   /*表示位置を指定します*/
   position: absolute;
   top: -30px;
-  left: -15px;
+  left: -40px;
 
   /*非表示にしておきます*/
   display: none;
@@ -475,6 +476,8 @@ export default {
   padding: 5px;
   border-radius: 5px;
   color: white;
+  width:300px;
+  font-size:12px;
   background-color: red;
   /*影をつけて見栄えを良くします*/
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8),
@@ -489,7 +492,7 @@ export default {
   /*表示位置を指定します*/
   position: absolute;
   top: -30px;
-  left: -15px;
+  left: -70px;
 
   /*非表示にしておきます*/
   display: none;
@@ -499,6 +502,8 @@ export default {
   padding: 5px;
   border-radius: 5px;
   color: white;
+  width:280px;
+  font-size:12px;
   background-color: green;
   /*影をつけて見栄えを良くします*/
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8),
