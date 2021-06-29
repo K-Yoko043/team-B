@@ -12,7 +12,7 @@
 					<div class="form-group">
 						<input @change="fileSelect" type="file" name="file" class="form-control-file">
 						<img class="img" v-if="selected_file" :src="confirmedImage" />
-						<img class="img" v-else src="/image/noImage.jpg">
+						<img class="img" v-else src="/image/gorilla.png">
 					</div>
 
 					<div class="form-group">
@@ -88,7 +88,7 @@ export default {
 				this.confirmedImage = e.target.result;
 			};
 		},
-		upload: function() {
+		async upload () {
 			let formData = new FormData();
 			formData.append('file', this.selected_file);
 

@@ -38,7 +38,7 @@
 					<div class="form-inline">
 						<p class="mr-1">返信先: </p>
 						<p class="font-weight-bold text-primary">@{{ content.user_name }}</p>
-						<div class="align-self-center ml-5">
+						<div class="align-self-center col text-right">
 							<button type="button" class="btn btn-primary form-control-btn" @click="onStore" style="margin-bottom: 10px;">
 								<i class="far fa-lg fa-comments"></i> 返信
 							</button>

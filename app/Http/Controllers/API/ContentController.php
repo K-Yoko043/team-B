@@ -75,9 +75,6 @@ class ContentController extends Controller
 			$contents = Content::all();
 		}
 
-		\Log::info($rets);
-
-
 		return response()->json([
 			'content_text' => $content_text,
 			'contents' => ContentForListResource::collection($contents),
@@ -162,14 +159,17 @@ class ContentController extends Controller
 	public function showTag(Request $request)
 	{
 		$tag = $request->tag;
+		\Log::info('tagの内容');
+		\Log::info($tag);		
 
-		$tags = Content::where('tag', '=', '%'.$tag.'%')->get();
-		$tag = Content::groupby('tag')->pluck('tag');
+		// $tag = Content::groupby('tag')->pluck('tag');
+		$contents = Content::where('tag', 'like', '%'.$tag.'%')->get();
+		// $contents = Content::all();
+		\Log::info($contents);
 
-	return response()->json([
-		// 'tag' => $tag,
-		'tags' => ContentForListResource::collection($tags),
-	]);
+		return response()->json([
+			'contents' => ContentForListResource::collection($contents),
+		]);
 	}
 
 }
