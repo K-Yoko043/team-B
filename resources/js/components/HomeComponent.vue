@@ -74,8 +74,8 @@
 					<i v-if="content.user_name === own.name"
 						 class="far fa-edit clickable" @click="onResume(content)">
 					</i>
-					<i v-if="content.is_bookmark == 0" class="far fa-bookmark" @click="addbook(content.id)" style="color:#04B4AE;float:right;"></i>
-					<i v-else class="fas fa-bookmark" @click="deletebook(content.id)" v-cloak style="color:#04B4AE;float:right;"></i>
+					<i v-if="content.is_bookmark == 0" class="far fa-bookmark" @click="addbook(content.id)" style="color:#04B4AE; float:right;"><p class="popin">ブックマークに追加する</p></i>
+					<i v-else class="fas fa-bookmark" @click="deletebook(content.id)" v-cloak style="color:#04B4AE;float:right;"><p class="pop">ブックマークを外す</p></i>
 				</h3>
 				<div class="card-body">
 					<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
@@ -235,4 +235,91 @@ export default {
 .card {
 	margin-bottom: 50px;
 }
+
+.popin {
+    position: absolute;
+    top: -30px;
+    right: -10px;
+    font-size:15px;
+
+    /*非表示にしておきます*/
+    display: none;
+    opacity: 0;
+
+    /*表示スタイルを指定します*/
+    padding: 5px;
+    border-radius: 5px;
+    color: #ffffff;
+    background-color: #04B4AE;
+    /*影をつけて見栄えを良くします*/
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 1px 0 0 rgba(255, 255, 255, 0.3),
+        inset -1px 0 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+
+    /*アニメーションを指定します*/
+    animation-duration: 0.3s;
+    animation-name: show-balloon;
+}
+
+.fa-bookmark:hover .popin {
+    display: inline-block;
+    opacity: 1;
+    top: -40px;
+}
+
+.popin::before {
+    /*吹き出し部分の三角形を表示します*/
+    content: "";
+    position: absolute;
+    top: 97%;
+    right: 40px;
+    border: 6px solid transparent;
+    border-top: 6px solid #04B4AE;
+}
+
+.pop {
+    position: absolute;
+    top: -30px;
+    right: -10px;
+    font-size:15px;
+
+    /*非表示にしておきます*/
+    display: none;
+    opacity: 0;
+
+    /*表示スタイルを指定します*/
+    padding: 5px;
+    border-radius: 5px;
+    color: #ffffff;
+    background-color: #04B4AE;
+    /*影をつけて見栄えを良くします*/
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 1px 0 0 rgba(255, 255, 255, 0.3),
+        inset -1px 0 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+
+    /*アニメーションを指定します*/
+    animation-duration: 0.3s;
+    animation-name: show-balloon;
+}
+
+.fa-bookmark:hover .pop {
+    display: inline-block;
+    opacity: 1;
+    top: -40px;
+}
+
+.pop::before {
+    /*吹き出し部分の三角形を表示します*/
+    content: "";
+    position: absolute;
+    top: 97%;
+    right: 40px;
+    border: 6px solid transparent;
+    border-top: 6px solid #04B4AE;
+}
+
 </style>
