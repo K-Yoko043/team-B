@@ -157,7 +157,7 @@ class ContentController extends Controller
 		]);
 	}
 
-	public function addbook(Request $id){
+	public function addbook($id){
         $bookmark = new Bookmark;
         $bookmark->content_id = $id;
         $bookmark->user_id = Auth::user()->id;

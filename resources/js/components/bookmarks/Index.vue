@@ -102,8 +102,6 @@ export default {
                 axios.spread((res1, res2, res3, res4) => {
                     this.contents = res1.data;
 
-                    console.log(this.contents)
-
                     for (let i in this.contents) {
                         if (this.contents[i].is_bookmark === 1) {
                             this.check = 1;
