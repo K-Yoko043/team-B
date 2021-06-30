@@ -502,7 +502,7 @@ export default {
   padding: 5px;
   border-radius: 5px;
   color: white;
-  width:280px;
+  width:300px;
   font-size:12px;
   background-color: green;
   /*影をつけて見栄えを良くします*/
