@@ -439,7 +439,7 @@ export default {
 .fukidashi1 {
   /*表示位置を指定します*/
   position: absolute;
-  top: -30px;
+  bottom: 25px;
   left: -15px;
 
   /*非表示にしておきます*/
@@ -465,7 +465,7 @@ export default {
 .fukidashi2 {
   /*表示位置を指定します*/
   position: absolute;
-  top: -30px;
+  bottom: 25px;
   left: -40px;
 
   /*非表示にしておきます*/
@@ -491,7 +491,7 @@ export default {
 .fukidashi3 {
   /*表示位置を指定します*/
   position: absolute;
-  top: -30px;
+  bottom: 25px;
   left: -70px;
 
   /*非表示にしておきます*/
@@ -518,18 +518,18 @@ export default {
   /*表示するようにします*/
   display: inline-block;
   opacity: 1;
-  top: -40px;
+  bottom: 25px;
 }
 .checkparent .checkchild2:hover .fukidashi2 {
   /*表示するようにします*/
   display: inline-block;
   opacity: 1;
-  top: -40px;
+  bottom: 25px;
 }
 .checkparent .checkchild3:hover .fukidashi3 {
   /*表示するようにします*/
   display: inline-block;
   opacity: 1;
-  top: -40px;
+  bottom: 25px;
 }
 </style>
