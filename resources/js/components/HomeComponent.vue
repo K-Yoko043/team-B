@@ -35,7 +35,7 @@
 							<button class="dropdown-item" type="button" @click="onTagSearch('')">トップに戻る</button>
 					 		<button class="dropdown-item" type="button" @click="onTagSearch('フィロソフィー')">フィロソフィー勉強会</button>
 							<button class="dropdown-item" type="button" @click="onTagSearch('NG')">NG勉強会</button>
-							<button class="dropdown-item" type="button" @click="onTagSearch('Bookmark')">ブックマーク</button>
+							<a class="dropdown-item" type="button" href="./bookmark" @click="onSearch">ブックマーク</a>
 							<a class="dropdown-item" href="#" v-show="own.is_admin">
 								<router-link
 									:to="{ name: 'setting' }"
