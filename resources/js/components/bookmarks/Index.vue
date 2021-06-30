@@ -44,7 +44,7 @@
 
             <table class="table table-striped" v-if="check === 1">
                 <div v-for="content in contents" :key="content.id" class="card bg-white border-info">
-                    <div v-if="content.is_bookmark ===1">
+                    <div v-if="content.is_bookmark === 1">
                         <h3 class="card-header">
                             <img src="/storage/1623910044.柴犬.jpg" class="img-thumbnail" alt=""/>
                                 {{ content.user_name }}
@@ -154,6 +154,7 @@ export default {
 .card {
     margin-bottom: 50px;
 }
+
 
 .pop {
     position: absolute;
