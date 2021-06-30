@@ -40,11 +40,17 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('content/add/{content}','API\ContentController@addbook');
     Route::delete('content/delete/{content}','API\ContentController@deletebook');
 
+    // 投稿の絞り込み
+    Route::get('tag', 'API\ContentController@showTag');
+    
+    
+    // コメント（返信）
+    Route::get('content/{content}/get_comments', 'API\CommentController@index');
     
     // プロフィール
     Route::get('profile', 'API\ProfileController@index');
+    Route::post('profile/{profile}', 'API\ProfileController@store');
     Route::get('profile/{profile}', 'API\ProfileController@show');
-    Route::post('profile', 'API\ProfileController@store');
 
     //ブックマーク
     Route::get('Bookmark','API\BookmarkController@index');

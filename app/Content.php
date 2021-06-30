@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,16 @@ class Content extends Model
     
 
     /**
+     * テキスト内のリンク部分を取得
+     */
+    // public function getBodyWithLinkAttribute(): string
+    // {
+    //     $pattern = '/((?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
+    //     $replace = '<a href="$1">$1</a>';
+    //     return preg_replace($pattern, $replace, $this->body);
+    // }
+    
+    /**
      * ユーザを取得
      */
     public function user()
@@ -34,17 +45,9 @@ class Content extends Model
         return $this->belongsTo('App\Goriller');
     }
 
-    /**
-     * いいねを取得
-     */
-    public function likes()
+    public function comments()
     {
-        return $this->hasMany('App\Like');
-    }
-
-    public function isLiked($user_id)
-    {
-        return $this->likes()->where('user_id', $user_id)->exists();
+        return $this->hasMany('App\Comment');
     }
 
     // ブックマークを取得

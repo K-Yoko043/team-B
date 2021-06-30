@@ -1,51 +1,55 @@
 <template>
 <div class="container">
-	<div class="card text-center mx-auto" style="max-width: 800px">
-
-		<div class="fixed-top">
-			<div class="form-inline justify-content-center">
-				<div class="form-inline text-left">
-					<div class="form-group">
-						<input class="form-control" type="text" v-model="keyword" placeholder="キーワード検索">
-					</div>
-					<button type="button" class="btn btn-primary" @click="onSearch">検索</button>
-				</div>
-
-				<div class="dropdown text-right">
-					<button class="btn btn-outline-dark dropdown-toggle" type="button"
-						id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fas fa-sliders-h"></i>
-					</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<a class="dropdown-item" href="#">
-							<router-link
-								:to="{ name: 'content' }"
-								>新規投稿</router-link
-							>
-						</a>
-						<a class="dropdown-item" href="#">
-							<router-link
-								:to="{ name: 'profile' }"
-								>プロフィール編集</router-link
-							>
-						</a>
-						<!-- クリックされたらonSearch? -->
-					 	<a class="dropdown-item" href="#" @click="onSearch">フィロソフィー勉強会</a>
-						<a class="dropdown-item" href="#" @click="onSearch">NG勉強会</a>
-						<a class="dropdown-item" href="./bookmark" @click="onSearch">ブックマーク</a>
-						<a class="dropdown-item" href="#" v-show="own.is_admin">
-							<router-link
-								:to="{ name: 'setting' }"
-								>設定管理</router-link
-							>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-
+	<div class="card text-center mx-auto">
 		<div class="card-body">
-			<h3 class="title-margin mt-3 mb-5">トップページ</h3>
+
+				<div class="form-inline">
+					<div class="form-inline" style="overflow: hidden;">
+						<div class="form-group">
+							<input class="form-control" type="text" v-model="keyword" placeholder="キーワード検索">
+						</div>
+						<button type="button" class="btn btn-primary" @click="onSearch">
+							<i class="fas fa-search"></i>
+						</button>
+					</div>
+
+					<div class="dropdown text-right">
+						<button class="btn btn-outline-dark dropdown-toggle" type="button"
+							id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="fas fa-sliders-h"></i>
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="#">
+								<router-link
+									:to="{ name: 'content' }"
+								>新規投稿</router-link
+								>
+							</a>
+							<a class="dropdown-item" href="#">
+								<router-link
+									:to="{ name: 'profile' }"
+									>プロフィール編集</router-link
+								>
+							</a>
+						<!-- クリックされたらonSearch? -->
+							<button class="dropdown-item" type="button" @click="onTagSearch('')">トップに戻る</button>
+					 		<button class="dropdown-item" type="button" @click="onTagSearch('フィロソフィー')">フィロソフィー勉強会</button>
+							<button class="dropdown-item" type="button" @click="onTagSearch('NG')">NG勉強会</button>
+							<button class="dropdown-item" type="button" @click="onTagSearch('Bookmark')">ブックマーク</button>
+							<a class="dropdown-item" href="#" v-show="own.is_admin">
+								<router-link
+									:to="{ name: 'setting' }"
+								>設定管理</router-link
+								>
+							</a>
+						</div>
+					</div>
+				</div>
+
+			<div class="form-group">
+			<img class="img mt-3" src="/image/logo.jpg">
+			</div>
+
 			<div class="d-flex flex-wrap justify-content-center mb-2">
 				<router-link
 					:to="{ name: 'content' }"
@@ -63,7 +67,7 @@
 			</div>
 		</div>
 
-		<table class="table table-striped">
+		<table class="table table-striped" v-if="contents">
 			<div v-for="content in sortContents"
 				:key="content.id" 
 				class="card bg-white border-info"
@@ -77,10 +81,23 @@
 					<i v-if="content.is_bookmark == 0" class="far fa-bookmark" @click="addbook(content.id)" style="color:#04B4AE; float:right;"><p class="popin">ブックマークに追加する</p></i>
 					<i v-else class="fas fa-bookmark" @click="deletebook(content.id)" v-cloak style="color:#04B4AE;float:right;"><p class="pop">ブックマークを外す</p></i>
 				</h3>
-				<div class="card-body">
-					<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
-					<p class="card-text text-left" style="white-space: pre-wrap;">{{ content.content_text }}</p>
+
+				<div class="readmore">
+					<div class="card-body">
+						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
+						<h6>{{content.content_text.length}}文字</h6>
+						<input id="check1" class="readmore-check" type="checkbox">
+						<div class="readmore-content">
+							<p class="card-text text-left" 
+								style="white-space: pre-wrap;"
+							>
+							{{ content.content_text }}
+							</p>
+						</div>
+						<label class="readmore-label" for="check1" v-if="content.content_text.length > 100"></label>
+					</div>
 				</div>
+
 				<p>投稿日時：{{ content.created_at }}</p>
 				<div class="card-footer btn-group" role="group"> 
 										                  
@@ -91,20 +108,10 @@
 						<i class="far fa-lg fa-thumbs-up"></i> いいね
 					</button>
 					
-					<button class="btn btn-outline-info btn-sm" data-toggle="collapse" data-target="#reply">
-						<i class="far fa-lg fa-comment"></i> コメントする
+					<button class="btn btn-outline-info btn-sm ml-10" @click="onComment(content)">
+						<i class="far fa-lg fa-comment-dots"></i> コメントする
 					</button>
-					<div id="reply" class="collapse">
- 						<div class="form-group">
-							<label>返信者</label>
-							<input v-model="own.goriller_name" class="text-center form-control" readonly="readonly">
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<textarea class="form-control" style="height: 300px;" placeholder="コメントする..."></textarea>
-							</div>
-						</div>
-					</div>
+				
 				</div>
 			</div>
 		</table>
@@ -124,7 +131,6 @@ export default {
 			contents: [],
 			gorillers: [],
 			content_text: '',
-			tag: '',
 			good_count: '',
 			keyword: '',
 			is_liked: false,
@@ -140,7 +146,7 @@ export default {
 		this.getItems()
 	},
 	watch: {
-		//
+		
 	},
 	computed: {
 		own() {
@@ -168,7 +174,6 @@ export default {
 					sort: this.sort,
 					keyword: this.keyword,
 					content_text: this.content_text,
-					tag: this.tag,
 				},
 			})
 			this.content_text = data.content_text
@@ -193,9 +198,32 @@ export default {
       		this.getItems()
 		},
 
+		async onTagSearch(selected_tag) {
+			this.isLoading = true;
+			if (selected_tag != "") {
+				alert(selected_tag +"勉強会の投稿のみ表示します。")
+			} else {
+				alert("トップに戻ります。")
+			}
+			const { data } = await axios.get('/api/tag', {
+				params: {
+					tag: selected_tag,
+				},
+			})
+			this.contents = data.contents
+			// this.tags = data.tags
+			this.isLoading = false
+		},
+
 		onResume(content) {
 			this.$router.push({ 
 				name: 'content.resume', 
+				params: { contentId: content.id }
+			})
+		},
+		onComment(content) {
+			this.$router.push({
+				name: 'comment',
 				params: { contentId: content.id }
 			})
 		},
@@ -209,7 +237,6 @@ export default {
             axios.delete('/api/content/delete/' + contentid)
             location.reload()
         },
-
 	},
 }
 </script>
@@ -230,6 +257,14 @@ export default {
 	max-width: 100%;
 	max-height: 100%;
 	border-radius: 100%;
+}
+.img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+	// border-radius: 150%;
+	// border:	2px solid rgb(170, 170, 255)
 }
 
 .card {
@@ -322,4 +357,60 @@ export default {
     border-top: 6px solid #04B4AE;
 }
 
+.readmore {
+	position: relative;
+	box-sizing: border-box;
+	padding: 10px;
+	border: 1px solid #CCC;
+}
+.readmore-content {
+	position: relative;
+	overflow: hidden;
+	height: 100px;
+}
+.readmore-content::before {
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	content: "";
+	height: 50px;
+	background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.8) 50%, #fff 100%);
+}
+.readmore-label {
+	display: table;
+	bottom: 5px;
+	position: absolute;
+	bottom: 5px;
+	left: 50%;
+	transform: translateX(-50%);
+	-webkit-transform: translateX(-50%);
+	margin: 0 auto;
+	z-index: 2;
+	padding:	0 10px;
+	background-color: #4283cca6;
+	border-radius: 10px;
+	color: #FFF;
+}
+.readmore-label::before {
+	content: "続きを読む";
+}
+.readmore-check {
+	display: none;
+}
+.readmore-check:checked ~ .readmore-label {
+	position: static;
+	transform: translateX(0);
+	-webkit-transform: translateX(0);
+}
+.readmore-check:checked ~ .readmore-label:before {
+	content: "閉じる";
+}
+.readmore-check:checked ~ .readmore-content {
+	height: auto;
+}
+.readmore-check:checked ~ .readmore-content::before {
+	display: none;
+}
 </style>

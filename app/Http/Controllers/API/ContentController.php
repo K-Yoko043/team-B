@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContentForList as ContentForListResource;
 use App\Http\Resources\ContentForShow as ContentForShowResource;
@@ -14,13 +15,23 @@ use App\User;
 use App\Like;
 use App\Bookmark;
 
-use Illuminate\Support\Facades\Auth;
-
 class ContentController extends Controller
 {
 	public function __construct()
 	{
 		$this->middleware(['auth', 'verified'])->only(['like', 'unlike']);
+	}
+
+	public function getLink($comment)
+	{
+		$pattern = '/https?:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+/';
+		$comment = preg_replace_callback($pattern, 'replace', htmlspecialchars($comment));
+		return $comment;
+	}
+
+	public function replace($matches)
+	{
+		return '<a href="'.$matches[0].'">'.$matches[0].'</a>';
 	}
 
 	/**
@@ -32,6 +43,8 @@ class ContentController extends Controller
 	{
 		$keyword = $request->keyword;
 		$content_text = $request->content_text;	
+
+		// $content = $this->getLink($content_text);
 
 		$rets = [];
 		if (!empty($keyword)) {
@@ -52,14 +65,16 @@ class ContentController extends Controller
 		if (!empty($rets)) {
 			$contents = [];
 			foreach ($rets as $ret) {
-				$contents = Content::where('content_text', 'like', '%'.$ret.'%')
-					->get();
+				// $contents = Content::where('content_text', 'like', '%'.$ret.'%')
+				// 	->get();
+				// $contents = Content::whereRaw('match (`content_text`) against (+'.$ret.' in boolean mode)');
+				$contents = Content::whereRaw("match(content_text) against(?)", $ret)
+				->get();
+				\Log::info('***********************loop***********************');
 			}
 		} else {
 			$contents = Content::all();
 		}
-
-		\Log::info($contents);
 
 		return response()->json([
 			'content_text' => $content_text,
@@ -111,22 +126,18 @@ class ContentController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Content $content)
+	public function update(Request $request, Content $content)
 	{
-		$user->Auth::user();
-		if ($user->id != $content->user_id) {
-			if ($content->isLiked(Auth::id())) {
-				$delete_record = $content->getLike($user->id);
-				$delete_record->delete();
-			} else {
-				$like = Like::firstOrCreate(
-					array(
-						'user_id' => Auth::user()->id,
-						'content_id' => $content_id
-					)
-					);
-			}
-		}
+		$content = DB::transaction(function () use ($request, $content) {
+			// $content->title = $request->content['title'];
+			$content->tag = $request->content['tag'];
+			$content->content_text = $request->content['content_text'];
+			$content->save();
+		});
+
+		return response()->json([
+			'result' => true,
+		]);
 	}
 
 	/**
@@ -146,7 +157,7 @@ class ContentController extends Controller
 		]);
 	}
 
-	public function addbook($id){
+	public function addbook(Request $id){
         $bookmark = new Bookmark;
         $bookmark->content_id = $id;
         $bookmark->user_id = Auth::user()->id;
@@ -162,5 +173,20 @@ class ContentController extends Controller
             'result' => true,
         ]);
     }
+	public function showTag(Request $request)
+	{
+		$tag = $request->tag;
+		\Log::info('tagの内容');
+		\Log::info($tag);		
+
+		// $tag = Content::groupby('tag')->pluck('tag');
+		$contents = Content::where('tag', 'like', '%'.$tag.'%')->get();
+		// $contents = Content::all();
+		\Log::info($contents);
+
+		return response()->json([
+			'contents' => ContentForListResource::collection($contents),
+		]);
+	}
 
 }
