@@ -552,17 +552,44 @@ export default {
   		opacity: 1;
   		bottom: 25px;
 	}
+	.fukidashi1::before {
+  		/*吹き出し部分の三角形を表示します*/
+  		content: "";
+  		position: absolute;
+  		top: 97%;
+  		left: 80px;
+  		border: 6px solid transparent;
+  		border-top: 6px solid blue;
+	}
 	.checkparent .checkchild2:hover .fukidashi2 {
   	/*表示するようにします*/
   		display: inline-block;
   		opacity: 1;
   		bottom: 25px;
 	}
+	.fukidashi2::before {
+  		/*吹き出し部分の三角形を表示します*/
+  		content: "";
+  		position: absolute;
+  		top: 97%;
+  		left: 100px;
+  		border: 6px solid transparent;
+  		border-top: 6px solid red;
+	}
 	.checkparent .checkchild3:hover .fukidashi3 {
   		/*表示するようにします*/
   		display: inline-block;
   		opacity: 1;
-  		bottom: 25px;
+  		bottom:25px;
+	}
+	.fukidashi3::before {
+  		/*吹き出し部分の三角形を表示します*/
+  		content: "";
+  		position: absolute;
+  		top: 97%;
+  		left: 100px;
+  		border: 6px solid transparent;
+  		border-top: 6px solid green;
 	}
 }
 </style>
