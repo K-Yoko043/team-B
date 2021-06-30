@@ -43,45 +43,24 @@
             </div>
 
             <table class="table table-striped" v-if="check === 1">
-                <div
-                    v-for="content in contents"
-                    :key="content.id"
-                    class="card bg-white border-info"
-                >
-                    <h3 class="card-header">
-                        <img
-                            src="/storage/1623910044.柴犬.jpg"
-                            class="img-thumbnail"
-                            alt=""
-                        />
-                        {{ content.user_name }}
-                        <i
-                            v-if="content.is_bookmark == 0"
-                            class="far fa-bookmark"
-                            @click="addbook(content.id)"
-                            style="color:#04B4AE; float:right;"
-                        ></i>
-                        <i
-                            v-else
-                            class="fas fa-bookmark"
-                            @click="deletebook(content.id)"
-                            v-cloak
-                            style="color:#04B4AE; float:right;"
-                            ><p class="pop">ブックマークを外す</p></i
-                        >
-                    </h3>
-                    <div class="card-body">
-                        <h5 class="card-subtitle mb-2 text-muted">
-                            {{ content.tag }}
-                        </h5>
-                        <p
-                            class="card-text text-left"
-                            style="white-space: pre-wrap;"
-                        >
-                            {{ content.content_text }}
-                        </p>
+                <div v-for="content in contents" :key="content.id" class="card bg-white border-info">
+                    <div v-if="content.is_bookmark ===1">
+                        <h3 class="card-header">
+                            <img src="/storage/1623910044.柴犬.jpg" class="img-thumbnail" alt=""/>
+                                {{ content.user_name }}
+                            <i v-if="content.is_bookmark == 0" class="far fa-bookmark" @click="addbook(content.id)" style="color:#04B4AE; float:right;"></i>
+                            <i v-else class="fas fa-bookmark" @click="deletebook(content.id)" v-cloak style="color:#04B4AE; float:right;"><p class="pop">ブックマークを外す</p></i>
+                        </h3>
+                        <div class="card-body">
+                            <h5 class="card-subtitle mb-2 text-muted">
+                                {{ content.tag }}
+                            </h5>
+                            <p class="card-text text-left" style="white-space: pre-wrap;">
+                                {{ content.content_text }}
+                            </p>
+                        </div>
+                        <p>投稿日時：{{ content.created_at }}</p>
                     </div>
-                    <p>投稿日時：{{ content.created_at }}</p>
                 </div>
             </table>
             <div v-else v-cloak>
@@ -122,6 +101,8 @@ export default {
             axios.all([api.get("/api/Bookmark/")]).then(
                 axios.spread((res1, res2, res3, res4) => {
                     this.contents = res1.data;
+
+                    console.log(this.contents)
 
                     for (let i in this.contents) {
                         if (this.contents[i].is_bookmark === 1) {
