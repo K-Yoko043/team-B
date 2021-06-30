@@ -514,22 +514,24 @@ export default {
   animation-duration: 0.3s;
   animation-name: show-balloon;
 }
-.checkparent .checkchild1:hover .fukidashi1 {
-  /*表示するようにします*/
-  display: inline-block;
-  opacity: 1;
-  bottom: 25px;
-}
-.checkparent .checkchild2:hover .fukidashi2 {
-  /*表示するようにします*/
-  display: inline-block;
-  opacity: 1;
-  bottom: 25px;
-}
-.checkparent .checkchild3:hover .fukidashi3 {
-  /*表示するようにします*/
-  display: inline-block;
-  opacity: 1;
-  bottom: 25px;
+@media screen and (min-width: 640px) {
+	.checkparent .checkchild1:hover .fukidashi1 {
+  	/*表示するようにします*/
+  		display: inline-block;
+  		opacity: 1;
+  		bottom: 25px;
+	}
+	.checkparent .checkchild2:hover .fukidashi2 {
+  	/*表示するようにします*/
+  		display: inline-block;
+  		opacity: 1;
+  		bottom: 25px;
+	}
+	.checkparent .checkchild3:hover .fukidashi3 {
+  		/*表示するようにします*/
+  		display: inline-block;
+  		opacity: 1;
+  		bottom: 25px;
+	}
 }
 </style>
