@@ -182,7 +182,6 @@ export default {
       		username: '',
 			today: '',
       		deleteid: 0,
-			repeated:0,
 		}
 	},
 	mounted () {
@@ -322,7 +321,6 @@ export default {
       		this.invalid = false
       		this.errorMessage = ''
       		const _this = this
-			this.repeated+=1
       		axios
         		.get('/api/content/addgood/' + tweetId + '/' + mark)
         		.then(function(resp) {})
@@ -333,21 +331,32 @@ export default {
         		this.contents[this.contents.length-Index-1].own_like_good = 1
         		this.contents[this.contents.length-Index-1].count_good += 1
 				this.contents[this.contents.length-Index-1].member_good += this.username + 'さん,'
+				this.contents[this.contents.length-Index-1].repeated_good+=1
       		}
       		if (mark === 2) {
         		this.contents[this.contents.length-Index-1].own_like_heart = 1
         		this.contents[this.contents.length-Index-1].count_heart += 1
 				this.contents[this.contents.length-Index-1].member_heart += this.username + 'さん,'
+				this.contents[this.contents.length-Index-1].repeated_heart+=1
       		}
       		if (mark === 3) {
         		this.contents[this.contents.length-Index-1].own_like_check = 1
         		this.contents[this.contents.length-Index-1].count_check += 1
 				this.contents[this.contents.length-Index-1].member_check += this.username + 'さん,'
+				this.contents[this.contents.length-Index-1].repeated_check+=1
       		}
-			if(this.repeated>=5){
-				this.repeated=0
+			if(this.contents[this.contents.length-Index-1].repeated_good>=5||this.contents[this.contents.length-Index-1].repeated_heart>=5||this.contents[this.contents.length-Index-1].repeated_check>=5){
 				location.reload()
 			}
+			setTimeout(() => {
+        		this.contents[this.contents.length-Index-1].repeated_good = 0}
+        		,5000)
+			setTimeout(() => {
+        		this.contents[this.contents.length-Index-1].repeated_heart = 0}
+        		,5000)
+			setTimeout(() => {
+        		this.contents[this.contents.length-Index-1].repeated_check = 0}
+        		,5000)
     	},
 		onDeletegood: function(Index,tweetId, mark) {
       		const _this = this
@@ -365,21 +374,32 @@ export default {
         		this.contents[this.contents.length-Index-1].own_like_good = 0
         		this.contents[this.contents.length-Index-1].count_good -= 1
 				this.contents[this.contents.length-Index-1].member_good = this.contents[this.contents.length-Index-1].member_good.replace(this.username + 'さん,','',)
-      		}
+				this.contents[this.contents.length-Index-1].repeated_good+=1
+			}
       		if (mark === 2) {
         		this.contents[this.contents.length-Index-1].own_like_heart = 0
         		this.contents[this.contents.length-Index-1].count_heart -= 1
 				this.contents[this.contents.length-Index-1].member_heart = this.contents[this.contents.length-Index-1].member_heart.replace(this.username + 'さん,','',)
-      		}
+				this.contents[this.contents.length-Index-1].repeated_heart+=1
+			}  
       		if (mark === 3) {
         		this.contents[this.contents.length-Index-1].own_like_check = 0
         		this.contents[this.contents.length-Index-1].count_check -= 1
 				this.contents[this.contents.length-Index-1].member_check = this.contents[this.contents.length-Index-1].member_check.replace(this.username + 'さん,','',)
-      		}
-			if(this.repeated>=5){
-				this.repeated=0
+				this.contents[this.contents.length-Index-1].repeated_check+=1
+			}
+			if(this.contents[this.contents.length-Index-1].repeated_good>=5||this.contents[this.contents.length-Index-1].repeated_heart>=5||this.contents[this.contents.length-Index-1].repeated_check>=5){
 				location.reload()
 			}
+			setTimeout(() => {
+        		this.contents[this.contents.length-Index-1].repeated_good = 0}
+        		,5000)
+			setTimeout(() => {
+        		this.contents[this.contents.length-Index-1].repeated_heart = 0}
+        		,5000)
+			setTimeout(() => {
+        		this.contents[this.contents.length-Index-1].repeated_check = 0}
+        		,5000)
     	},
 		onResume(content) {
 			this.$router.push({ 
