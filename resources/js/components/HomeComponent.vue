@@ -182,6 +182,7 @@ export default {
       		username: '',
 			today: '',
       		deleteid: 0,
+			repeated:0,
 		}
 	},
 	mounted () {
@@ -321,6 +322,7 @@ export default {
       		this.invalid = false
       		this.errorMessage = ''
       		const _this = this
+			this.repeated+=1
       		axios
         		.get('/api/content/addgood/' + tweetId + '/' + mark)
         		.then(function(resp) {})
@@ -342,9 +344,14 @@ export default {
         		this.contents[this.contents.length-Index-1].count_check += 1
 				this.contents[this.contents.length-Index-1].member_check += this.username + 'さん,'
       		}
+			if(this.repeated>=5){
+				this.repeated=0
+				location.reload()
+			}
     	},
 		onDeletegood: function(Index,tweetId, mark) {
       		const _this = this
+			this.repeated+=1
       		axios
         		.delete('/api/content/deletegood/' + tweetId + '/' + mark)
         		.then(function(resp) {})
@@ -369,6 +376,10 @@ export default {
         		this.contents[this.contents.length-Index-1].count_check -= 1
 				this.contents[this.contents.length-Index-1].member_check = this.contents[this.contents.length-Index-1].member_check.replace(this.username + 'さん,','',)
       		}
+			if(this.repeated>=5){
+				this.repeated=0
+				location.reload()
+			}
     	},
 		onResume(content) {
 			this.$router.push({ 
