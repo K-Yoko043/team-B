@@ -20,9 +20,6 @@ class ProfileForList extends JsonResource
             'id' => $this->id,
             'path' => $this->path,
             'goriller_id' => isset($this->goriller) ? $this->goriller->id : '',
-            // 'goriller_id' => $this->goriller_id,
-            // 'goriller_id' => isset($this->goriller) ? $this->goriller->full_name : '',
-
         ];
     }
 }

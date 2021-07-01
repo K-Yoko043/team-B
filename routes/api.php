@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Bookmark as BookmarkResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,8 +47,19 @@ Route::middleware(['auth:api'])->group(function () {
     //いいね機能の追加削除
     Route::get('content/addgood/{content}/{mark}', 'API\ContentController@addgood');
     Route::delete('content/deletegood/{content}/{mark}', 'API\ContentController@deletegood');
+    Route::get('content/add/{content}','API\ContentController@addbook');
+    Route::delete('content/delete/{content}','API\ContentController@deletebook');
+
+    // 投稿の絞り込み
+    Route::get('tag', 'API\ContentController@showTag');
+    
+    
+    // コメント（返信）
+    Route::get('content/{content}/get_comments', 'API\CommentController@index');
+    
     // プロフィール
     Route::get('profile', 'API\ProfileController@index');
+    Route::post('profile/{profile}', 'API\ProfileController@store');
     Route::get('profile/{profile}', 'API\ProfileController@show');
     Route::post('profile', 'API\ProfileController@store');
     //現在ログインしているユーザーid及びユーザー名の取得
@@ -60,4 +72,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('notice/{userid}/{contentid}', 'API\NoticeController@destroycomment');
     //いいねのルーティング設定設定
     Route::get('like', 'API\LikeController@index');
+
+    //ブックマーク
+    Route::get('Bookmark','API\BookmarkController@index');
+    Route::get('Bookmark/getuser','API\BookmarkController@getuser');
 });

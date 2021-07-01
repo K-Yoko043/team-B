@@ -16,7 +16,8 @@ class ContentForList extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' => $this->id,  //content
+            'user_id' => $this->user_id,
             'user_name' => isset($this->user) ? $this->user->name : null,
             'tag' => $this->tag,
             'content_text' => $this->content_text,
@@ -33,6 +34,7 @@ class ContentForList extends JsonResource
             'member_good'=>'',
             'member_heart'=>'',
             'member_check'=>'',
+            'is_bookmark'=>$this->Bookmark->where('user_id',Auth::user()->id)->count(),
         ];
     }
 }

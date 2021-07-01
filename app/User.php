@@ -63,14 +63,6 @@ class User extends Authenticatable
     }
 
     /**
-     * いいねを取得
-     */
-    public function likes()
-    {
-        return $this->hasMany('App\Like');
-    }
-
-    /**
      * プロフィールを取得
      */
     public function profile()
@@ -80,5 +72,9 @@ class User extends Authenticatable
     public function notices()
     {
         return $this->hasMany('App\Notice');
+    }
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
     }
 }

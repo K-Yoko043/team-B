@@ -8,7 +8,6 @@ class Profile extends Model
 {
     protected $fillable = [
         'path',
-        'goriller_id',
     ];
 
     /**

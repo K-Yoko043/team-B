@@ -13,22 +13,15 @@
 						</div>
 					</div>
 
-					<div class="form-group text-center">
+					<div class="photo-form text-center">
 						<img class="img" v-if="profile.path" src="/storage/1623910044柴犬.jpg">
-						<img class="img" v-else src="/storage/1623910044柴犬.jpg">
-						<router-link
+						<img class="img" v-else src="/image/gorilla.png">
+						<!-- <router-link
 							:to="{ name: 'profile.upload'}"
 							class="btn btn-secondary"
-						>
-							<i class="fas fa-pencil-alt"></i>
-						</router-link>
-					</div>
-
-					<div class="form-inline justify-content-center">    
-						<div class="form-group text-center">
-							<h5>誕生日</h5>
-							<input class="form-control" type="text">
-						</div>
+						> -->
+							<i class="fas fa-lg fa-pencil-alt clickable" @click="onUpload(own.goriller_id)"></i>
+						<!-- </router-link> -->
 					</div>
 
 				</div>
@@ -43,7 +36,7 @@
 import moment from 'moment';
 export default {
 	props: [
-		'profile_id',
+		//
 	],
 	data () {
 		return {
@@ -82,41 +75,8 @@ export default {
 				this.isLoading = false
 			}))
 		},
-		onStore: function () {
-			let _this = this
-			if (this.mode == 'create') {
-				axios.post('/api/goriller', {
-					goriller: this.goriller,
-				})
-				.then(function (resp) {
-					if (resp.data.result) {
-						alert('登録しました。')
-						_this.$router.go(-1)
-					} else {
-						_this.errorMessage = resp.data.errorMessage
-						_this.invalid = true
-					}
-				})
-				.catch(function (resp) {
-					console.log(resp)
-				});
-			} else {
-				axios.put('/api/goriller/'+this.goriller.id, {
-					goriller: this.goriller,
-				})
-				.then(function (resp) {
-					if (resp.data.result) {
-						alert('更新しました。')
-						_this.$router.go(-1)
-					} else {
-						_this.errorMessage = resp.data.errorMessage
-						_this.invalid = true
-					}
-				})
-				.catch(function (resp) {
-					console.log(resp)
-				});
-			}
+		onUpload: function (goriller_id) {
+			this.$router.push({ name: 'profile.upload', params: { goriller_id: goriller_id }})
 		},
 		onBack: function () {
 			this.$router.go(-1)
@@ -165,6 +125,6 @@ export default {
 	max-height: 100%;
 	text-align: center;
 	border-radius: 150%;
-	border: 3px solid greenyellow;
+	border: 2px solid rgb(60, 100, 0);
 }
 </style>
