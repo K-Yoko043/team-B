@@ -268,8 +268,6 @@ export default {
             this.totalItems = data.total_items;
             this.contents = data.contents;
 
-            console.log(this.contents);
-
             this.isLoading = false;
 
             const api = axios.create();
@@ -508,5 +506,10 @@ export default {
 }
 .readmore-check:checked ~ .readmore-content::before {
     display: none;
+}
+@media screen and (max-width: 600px) {
+	.form-group > .form-control {
+	margin-top :15px;
+}
 }
 </style>
