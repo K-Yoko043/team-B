@@ -85,7 +85,6 @@
 				<div class="readmore">
 					<div class="card-body">
 						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
-						<h6>{{content.content_text.length}}文字</h6>
 						<input id="check1" class="readmore-check" type="checkbox">
 						<div class="readmore-content">
 							<p class="card-text text-left" 
@@ -179,6 +178,8 @@ export default {
 			this.content_text = data.content_text
 			this.totalItems = data.total_items
 			this.contents = data.contents
+
+			console.log(this.contents)
 
 			this.isLoading = false
 

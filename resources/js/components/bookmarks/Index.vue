@@ -37,18 +37,18 @@
                                 >新規投稿</router-link
                             >
                         </a>
-                        <a class="dropdown-item" href="./">トップ</a>
+                        <a class="dropdown-item" href="./">トップに戻る</a>
                     </div>
                 </div>
             </div>
 
             <table class="table table-striped" v-if="check === 1">
-                <div v-for="content in contents" :key="content.id" class="card bg-white border-info">
-                    <div v-if="content.is_bookmark === 1">
+                <div v-for="content in contents" :key="content.id">
+                    <div v-if="content.is_bookmark === 1" class="card bg-white border-info">
                         <h3 class="card-header">
                             <img src="/storage/1623910044.柴犬.jpg" class="img-thumbnail" alt=""/>
                                 {{ content.user_name }}
-                            <i v-if="content.is_bookmark == 0" class="far fa-bookmark" @click="addbook(content.id)" style="color:#04B4AE; float:right;"></i>
+                            <i v-if="content.is_bookmark == 0" class="far fa-bookmark" style="color:#04B4AE; float:right;"></i>
                             <i v-else class="fas fa-bookmark" @click="deletebook(content.id)" v-cloak style="color:#04B4AE; float:right;"><p class="pop">ブックマークを外す</p></i>
                         </h3>
                         <div class="card-body">
