@@ -44,9 +44,9 @@ class Content extends Model
         return $this->belongsTo('App\Goriller');
     }
 
-    public function comments()
+    public function responds()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany('App\Respond');
     }
 
 }

@@ -43,7 +43,7 @@ export default {
 			profile: {
 				id: '',
 				path: '',
-				goriller_id: '',
+				goriller_id: null,
 			},
 
 			invalid: false,

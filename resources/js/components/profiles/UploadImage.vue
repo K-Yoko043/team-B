@@ -22,7 +22,7 @@
 					<div class="row-line">
 						<transition name="fade" mode="out-in">
 						<div class="alert alert-success" role="alert" v-if="invalid">
-						　画像を選択してください。
+							画像を選択してください。
 						</div>
 						</transition>
 					</div>
@@ -91,6 +91,7 @@ export default {
 		async upload () {
 			let formData = new FormData();
 			formData.append('file', this.selected_file);
+			this.profile.goriller_id = this.goriller_id
 
 			let config = {
 				headers: {
@@ -104,16 +105,18 @@ export default {
 			}
 
 			let _this = this
-			axios.post('/api/profile/'+this.goriller_id, formData, config)
-				.then(function(response) {
-					if (response.data.result) {
-						alert('アップロードしました')
-					_this.$router.go(-1)
-					} else {
-						_this.errorMessage = response.data.errorMessage
-						_this.invalid = true
-					}
-				})
+			axios.post('/api/profile/'+this.goriller_id, formData, config, {
+				profile: this.profile
+			})
+			.then(function(response) {
+				if (response.data.result) {
+					alert('アップロードしました')
+				_this.$router.go(-1)
+				} else {
+					_this.errorMessage = response.data.errorMessage
+					_this.invalid = true
+				}
+			})
 		}
 	},
 }

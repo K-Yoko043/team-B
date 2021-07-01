@@ -172,4 +172,12 @@ class ContentController extends Controller
 		]);
 	}
 
+	public function readmore(Request $request)
+	{
+		$content_id = $request->content_id;
+		\Log::info($content_id);
+
+		return true;
+	}
+
 }

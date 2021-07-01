@@ -36,88 +36,87 @@ class ProfileController extends Controller
     //
   }
 
-/**
- * Store a newly created resource in storage.
- *
- * @param  \Illuminate\Http\Request  $request
- * @return \Illuminate\Http\Response
- */
-public function store(Request $request, Goriller $goriller)
-{
-  $this->validate($request, [
-    'file' => 'required | image',
-    ], [
-    'title.required' => 'タイトルを入力してください。',
-    'file.required' => '画像が選択されていません。',
-    'file.image' => '画像ファイルではありません。',
-  ]);
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request, Goriller $goriller)
+  {
+    $this->validate($request, [
+      'file' => 'required | image',
+      ], [
+      'title.required' => 'タイトルを入力してください。',
+      'file.required' => '画像が選択されていません。',
+      'file.image' => '画像ファイルではありません。',
+    ]);
 
-  \Log::info('aaa');
-  \Log::info($request->all());
-  \Log::info('bbb');
-  \Log::info(Profile::find($request->id));
+    if (request()->file) {
+      $file_name = time() . '.' . request()->file->getClientOriginalName();
+      request()->file->storeAs('public', $file_name);
+    }
 
-  if (request()->file) {
-    $file_name = time() . '.' . request()->file->getClientOriginalName();
-    request()->file->storeAs('public', $file_name);
+
+
+    DB::transaction(function () use ($request, $file_name, $goriller) {  
+      $image = new Profile;
+      $image->path = 'storage/' . $file_name;
+      // $image->goriller_id = Auth::id();
+      $image->id = $request->image['id'];
+      $image->goriller_id = $request->profile;
+      $image->save();
+      \Log::info($image);
+    });
+    
+    return response()->json([
+      'result' => true,
+    ]);
   }
 
+  /**
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function show(Profile $profile)
+  {
+    return new ProfileForShowResource($profile);
+  }
 
-  DB::transaction(function () use ($request, $file_name, $goriller) {  
-    $image = new Profile;
-    $image->path = 'storage/' . $file_name;
-    $image->save();
+  /**
+   * Show the form for editing the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function edit($id)
+  {
+  //
+  }
 
-  });
-  
-  return response()->json([
-    'result' => true,
-  ]);
-}
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function update(Request $request, $id)
+  {
+  //
+  }
 
-/**
- * Display the specified resource.
- *
- * @param  int  $id
- * @return \Illuminate\Http\Response
- */
-public function show(Profile $profile)
-{
-  return new ProfileForShowResource($profile);
-}
-
-/**
- * Show the form for editing the specified resource.
- *
- * @param  int  $id
- * @return \Illuminate\Http\Response
- */
-public function edit($id)
-{
-//
-}
-
-/**
- * Update the specified resource in storage.
- *
- * @param  \Illuminate\Http\Request  $request
- * @param  int  $id
- * @return \Illuminate\Http\Response
- */
-public function update(Request $request, $id)
-{
-//
-}
-
-/**
- * Remove the specified resource from storage.
- *
- * @param  int  $id
- * @return \Illuminate\Http\Response
- */
-public function destroy($id)
-{
-//
-}
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function destroy($id)
+  {
+  //
+  }
 
 }

@@ -118,9 +118,9 @@ const router = new VueRouter({
 
 		// コメント（返信）内容
 		{ 
-			name: 'comment', 
-			path: '/comment/:contentId', 
-			component: require('./components/comments/Index.vue').default,
+			name: 'respond', 
+			path: '/respond/:contentId', 
+			component: require('./components/responds/Index.vue').default,
 			props: true,
 		},
 

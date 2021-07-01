@@ -22,6 +22,8 @@ class ContentForList extends JsonResource
             'tag' => $this->tag,
             'content_text' => $this->content_text,
             'created_at' => $this->created_at->format('Y/m/d H:i'),
+            'comment_count' => $this->responds->where('content_id', $this->id)->count(),
+            'comment_visual' => false,
         ];
     }
 }

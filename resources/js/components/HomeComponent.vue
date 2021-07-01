@@ -34,7 +34,7 @@
 							<!-- クリックされたらonSearch? -->
 							<button class="dropdown-item" type="button" @click="onTagSearch('フィロソフィー')">フィロソフィー勉強会</button>
 							<button class="dropdown-item" type="button" @click="onTagSearch('NG')">NG勉強会</button>
-							<button class="dropdown-item" type="button" @click="onTagSearch('')">トップに戻る</button>
+							<button class="dropdown-item" type="button" v-if="search">絞り込みクリア</button>
 							<a class="dropdown-item" href="#" v-show="own.is_admin">
 								<router-link
 									:to="{ name: 'setting' }"
@@ -70,6 +70,7 @@
 			<div v-for="content in sortContents"
 				:key="content.id" 
 				class="card bg-white border-info"
+				style="border-width: 4px;"
 			>
 				<h3 class="card-header">
 					<img src="/storage/1623910044.柴犬.jpg" class="img-thumbnail" alt="">
@@ -83,6 +84,23 @@
 					<div class="card-body">
 						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
 						<h6>{{content.content_text.length}}文字</h6>
+						<div class="readmore-content">
+						<p class="card-text text-left" 
+							style="white-space: pre-wrap;"
+							v-if="content.content_text.length > 200"
+						>
+						{{ content.content_text.slice(0, 200) + '...'}}
+						</p>
+						</div>
+						<button v-if="!readmore" class="btn btn-secondary" @click="readMore(content)">もっと見る</button>
+						<button v-else class="btn btn-secondary" @click="readMore(content)">閉じる</button>
+					</div>
+				</div>
+
+				<!-- <div class="readmore">
+					<div class="card-body">
+						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
+						<h6>{{content.content_text.length}}文字</h6>
 						<input id="check1" class="readmore-check" type="checkbox">
 						<div class="readmore-content">
 							<p class="card-text text-left" 
@@ -93,11 +111,10 @@
 						</div>
 						<label class="readmore-label" for="check1" v-if="content.content_text.length > 100"></label>
 					</div>
-				</div>
+				</div> -->
 
 				<p>投稿日時：{{ content.created_at }}</p>
-				<div class="card-footer btn-group" role="group"> 
-										                  
+				<div class="card-footer btn-group" role="group"> 		                  
 					<button class="btn btn-outline-success btn-sm" v-if="is_liked" @click="unlike(content)">
 						<i class="far fa-lg fa-thumbs-up"></i> いいねを取り消す
 					</button>
@@ -108,10 +125,42 @@
 					<button class="btn btn-outline-info btn-sm ml-10" @click="onComment(content)">
 						<i class="far fa-lg fa-comment-dots"></i> コメントする
 					</button>
-				
+				</div>
+
+			<div v-show="content.comment_count" class="btn-group">
+				<div v-if="!show_comment" class="btn btn-outline-info btn-sm" @click="showComment(content)">
+						&#9660; {{ content.comment_count }}件の返信
+				</div>
+				<div v-else class="btn btn-outline-info btn-sm" @click="showComment(content)">
+						&#9650;閉じる
 				</div>
 			</div>
+
+			<div v-if="show_comment">
+				<div v-for="respond in responds" :key="respond.id">
+					<div v-if="content.id === respond.content_id">
+						<hr />
+						<p>返信者：{{ respond.user_name }}</p>
+						<p>
+							{{ respond.text }} <br>
+							<a href="#" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
+						</p>
+					</div>
+				</div>
+			</div>
+			
+
+			</div>
 		</table>
+
+		<div class="fixed-bottom text-right mb-4 mr-4">
+			<transition name="button">
+				<button class="btn btn-outline-dark" v-show="buttonActive" @click="returnTop">
+					<i class="far fa-hand-point-up"></i>
+					PageTop
+				</button>
+			</transition>
+		</div>
 
 	</div>
 </div>
@@ -127,6 +176,7 @@ export default {
 		return {
 			contents: [],
 			gorillers: [],
+			responds: [],
 			content_text: '',
 			good_count: '',
 			keyword: '',
@@ -135,12 +185,20 @@ export default {
 			sort: {
 					key: 'id',
 					isAsc: true,
-			}
+			},
+			search: false,
+			readmore: false,
+			show_comment: false,
+			totalComments: '',
+
+			buttonActive: false,
+			scroll: 0,
 		}
 	},
 	mounted () {
 		this.inspected_on = new moment().format('YYYY-MM-DD')
 		this.getItems()
+		window.addEventListener('scroll', this.scrollWindow)
 	},
 	watch: {
 		
@@ -181,8 +239,11 @@ export default {
 			const api = axios.create()
 			axios.all([
 				api.get('/api/goriller'),
+				api.get('/api/respond'),
 			]).then(axios.spread((res1, res2) => {
 				this.gorillers = res1.data
+				this.responds = res2.data
+				this.totalComments = res2.data.total_comments
 				this.isLoading = false
 			}))
 		},
@@ -196,6 +257,7 @@ export default {
 
 		async onTagSearch(selected_tag) {
 			this.isLoading = true;
+			this.search = true;
 			if (selected_tag != "") {
 				alert(selected_tag +"勉強会の投稿のみ表示します。")
 			} else {
@@ -220,10 +282,48 @@ export default {
 
 		onComment(content) {
 			this.$router.push({
-				name: 'comment',
+				name: 'respond',
 				params: { contentId: content.id }
 			})
 		},
+
+		readMore(content) {
+			const { data } = axios.get('/api/readmore/'+content.id, {
+				params: {
+					content_id: content.id,
+				},
+			})
+			this.readmore = readmore
+			// this.tags = data.tags
+			this.isLoading = false
+		},
+
+		showComment(content)
+		{
+			this.show_comment = !this.show_comment
+		},
+
+		returnTop()
+		{
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			})
+		},
+		scrollWindow()
+		{
+			const top = 300
+			this.scroll = window.scrollY
+			if (top <= this.scroll) {
+				this.buttonActive = true
+			} else {
+				this.buttonActive = false
+			}
+		},
+		linkToOtherWindow(respond)
+		{
+			window.open(respond.url, '_blank')
+		}
 
 	},
 }
@@ -251,8 +351,6 @@ export default {
 	height: auto;
 	max-width: 100%;
 	max-height: 100%;
-	// border-radius: 150%;
-	// border:	2px solid rgb(170, 170, 255)
 }
 
 .card {
@@ -268,7 +366,7 @@ export default {
 .readmore-content {
 	position: relative;
 	overflow: hidden;
-	height: 100px;
+	height: 150px;
 }
 .readmore-content::before {
 	display: block;
@@ -314,5 +412,14 @@ export default {
 }
 .readmore-check:checked ~ .readmore-content::before {
 	display: none;
+}
+
+.button-enter-active,
+.button-leave-active {
+	transition: opacity 0.5s;
+}
+.button-enter,
+.button-leave-to {
+	opacity: 0;
 }
 </style>

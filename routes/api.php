@@ -38,10 +38,14 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('content/{content}', 'API\ContentController@destroy');
     // 投稿の絞り込み
     Route::get('tag', 'API\ContentController@showTag');
+    // もっと見る
+    Route::get('readmore/{readmore}', 'API\ContentController@readmore');
     
     
     // コメント（返信）
-    Route::get('content/{content}/get_comments', 'API\CommentController@index');
+    Route::get('respond', 'API\RespondController@index');
+    Route::post('respond', 'API\RespondController@store');
+
     
     // プロフィール
     Route::get('profile', 'API\ProfileController@index');
