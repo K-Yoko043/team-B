@@ -440,6 +440,14 @@ export default {
 	max-height: 100%;
 	border-radius: 100%;
 }
+.img {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+	// border-radius: 150%;
+	// border:	2px solid rgb(170, 170, 255)
+}
 .card {
 	margin-bottom: 50px;
 }
