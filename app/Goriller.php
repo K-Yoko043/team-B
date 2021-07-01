@@ -35,7 +35,13 @@ class Goriller extends Model
     {
         return $this->hasMany('App\Content');
     }
-
+    /**
+     * 返信情報を取得
+     */
+    public function responds()
+    {
+        return $this->hasMany('App\Responds');
+    }
     /**
      * プロフィール画像を取得
      */
@@ -44,11 +50,11 @@ class Goriller extends Model
         return $this->hasOne('App\Profile');
     }
 
-    /**
-     * いいねを取得
-     */
-    public function likes()
-    {
-        return $this->hasMany('App\Like');
-    }
+    // /**
+    //  * いいねを取得
+    //  */
+    // public function likes()
+    // {
+    //     return $this->hasMany('App\Like','user_id');
+    // }
 }

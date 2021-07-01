@@ -55,9 +55,19 @@ class Content extends Model
         return $this->hasMany('App\Bookmark');
     }
 
-    public function is_bookmark($user_id)
+    // public function isLiked($user_id)
+    // {
+    //     return $this->likes()->where('user_id', $user_id)->exists();
+    // }
+    /**
+     * いいねを取得
+     */
+    public function likes()
     {
-        return $this->likes()->where('user_id', $user_id)->exists();
+        return $this->hasMany('App\Like');
     }
-
+    public function responds()
+    {
+        return $this->hasMany('App\Respond');
+    }
 }
