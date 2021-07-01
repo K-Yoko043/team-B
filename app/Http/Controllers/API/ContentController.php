@@ -21,18 +21,6 @@ class ContentController extends Controller
 		$this->middleware(['auth', 'verified'])->only(['like', 'unlike']);
 	}
 
-	public function getLink($comment)
-	{
-		$pattern = '/https?:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+/';
-		$comment = preg_replace_callback($pattern, 'replace', htmlspecialchars($comment));
-		return $comment;
-	}
-
-	public function replace($matches)
-	{
-		return '<a href="'.$matches[0].'">'.$matches[0].'</a>';
-	}
-
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -40,10 +28,9 @@ class ContentController extends Controller
 	 */
 	public function index(Request $request)
 	{
+
 		$keyword = $request->keyword;
 		$content_text = $request->content_text;	
-
-		// $content = $this->getLink($content_text);
 
 		$rets = [];
 		if (!empty($keyword)) {
@@ -57,7 +44,7 @@ class ContentController extends Controller
 				$keyword = mb_convert_kana($keyword, 'KV');
 				$rets = array_unique(explode(' ', $keyword));
 			}
-		} 
+		}
 
 		$content_text = Content::groupby('content_text')->pluck('content_text');
 
@@ -163,8 +150,12 @@ class ContentController extends Controller
 		\Log::info($tag);		
 
 		// $tag = Content::groupby('tag')->pluck('tag');
-		$contents = Content::where('tag', 'like', '%'.$tag.'%')->get();
-		// $contents = Content::all();
+		if ($tag != "")
+		{
+			$contents = Content::where('tag', 'like', '%'.$tag.'%')->get();
+		} else  {
+			$contents = Content::all();
+		}
 		\Log::info($contents);
 
 		return response()->json([

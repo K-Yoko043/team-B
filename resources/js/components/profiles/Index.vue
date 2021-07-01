@@ -5,15 +5,15 @@
 			<div class="card" key="admin">
 				<div class="card-body">
 					<div class="d-flex flex-wrap justify-content-center mb-2">
-						<div class="mr-auto">
-							<h3>{{ own.goriller_name }}</h3>
-						</div>
-						<div class="align-self-center">
+						<!-- <div class="mr-auto">
+							<h3>{{ own.name }}</h3>
+						</div> -->
+						<div class="align-self-center col text-right">
 							<button type="button" class="btn btn-dark" @click="onBack">戻る</button>
 						</div>
 					</div>
 
-					<div class="photo-form text-center">
+					<div class="photo-form text-center mb-5">
 						<img class="img" v-if="profile.path" src="/storage/1623910044柴犬.jpg">
 						<img class="img" v-else src="/image/gorilla.png">
 						<!-- <router-link
@@ -22,6 +22,12 @@
 						> -->
 							<i class="fas fa-lg fa-pencil-alt clickable" @click="onUpload(own.goriller_id)"></i>
 						<!-- </router-link> -->
+					</div>
+
+					<div class="form-inline">
+						名前：
+						<input class="form-control">
+						<!-- <span>パスワード: {{  }}</span> -->
 					</div>
 
 				</div>

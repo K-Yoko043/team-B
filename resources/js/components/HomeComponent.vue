@@ -34,7 +34,7 @@
 							<!-- クリックされたらonSearch? -->
 							<button class="dropdown-item" type="button" @click="onTagSearch('フィロソフィー')">フィロソフィー勉強会</button>
 							<button class="dropdown-item" type="button" @click="onTagSearch('NG')">NG勉強会</button>
-							<button class="dropdown-item" type="button" v-if="search">絞り込みクリア</button>
+							<button class="dropdown-item" type="button" @click="onTagSearch('')" v-if="search">絞り込みクリア</button>
 							<a class="dropdown-item" href="#" v-show="own.is_admin">
 								<router-link
 									:to="{ name: 'setting' }"
@@ -80,38 +80,33 @@
 					</i>
 				</h3>
 
-				<div class="readmore">
-					<div class="card-body">
-						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
-						<h6>{{content.content_text.length}}文字</h6>
-						<div class="readmore-content">
-						<p class="card-text text-left" 
-							style="white-space: pre-wrap;"
-							v-if="content.content_text.length > 200"
-						>
-						{{ content.content_text.slice(0, 200) + '...'}}
-						</p>
-						</div>
-						<button v-if="!readmore" class="btn btn-secondary" @click="readMore(content)">もっと見る</button>
-						<button v-else class="btn btn-secondary" @click="readMore(content)">閉じる</button>
-					</div>
-				</div>
+                <div class="card-body">
+                    <h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
+                    <h6>{{content.content_text.length}}文字</h6>
+                   
+                    <div v-if="content.moreFlag == false">
+                        <p class="card-text text-left" 
+                            style="white-space: pre-wrap;"
+                        >
+                        {{ content.content_text | truncate}}<span
+                            @click="content.moreFlag=true; contents.splice()"
+                            v-if="content.content_text.length > 100"
+                            class="clickable"
+                            style="color: gray;"
+                        > ... 続きを読む</span>
+                        </p>
+                    </div>
+                    <div v-else>
+                        <p @click="content.moreFlag=false; contents.splice()"
+                            class="card-text text-left"
+                            style="white-space: pre-wrap;"
+                        >
+                        {{ content.content_text }}
+                        </p>
+                    </div>
 
-				<!-- <div class="readmore">
-					<div class="card-body">
-						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
-						<h6>{{content.content_text.length}}文字</h6>
-						<input id="check1" class="readmore-check" type="checkbox">
-						<div class="readmore-content">
-							<p class="card-text text-left" 
-								style="white-space: pre-wrap;"
-							>
-							{{ content.content_text }}
-							</p>
-						</div>
-						<label class="readmore-label" for="check1" v-if="content.content_text.length > 100"></label>
-					</div>
-				</div> -->
+                </div>
+
 
 				<p>投稿日時：{{ content.created_at }}</p>
 				<div class="card-footer btn-group" role="group"> 		                  
@@ -141,10 +136,28 @@
 					<div v-if="content.id === respond.content_id">
 						<hr />
 						<p>返信者：{{ respond.user_name }}</p>
-						<p>
-							{{ respond.text }} <br>
-							<a href="#" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
-						</p>
+                         <div v-if="respond.moreFlag == false">
+                            <p class="card-text text-left mb-5"
+                                style="white-space: pre-wrap;"
+                            >
+                                {{ respond.text | truncate }}<span
+                                    @click="respond.moreFlag=true; responds.splice()"
+                                    v-if="respond.text.length > 100"
+                                    class="clickable"
+                                    style="color: gray;"
+                                > ... 続きを読む</span>
+                            </p>
+                            <a href="#" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
+                        </div>
+                        <div v-else class="mb-5">
+                            <p @click="respond.moreFlag=false; responds.splice()"
+                                class="card-text text-left"
+                                style="white-space: pre-wrap;"
+                            >
+                                {{ respond.text }}
+                            </p>
+                            <a href="#" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
+                        </div>
 					</div>
 				</div>
 			</div>
@@ -155,7 +168,7 @@
 
 		<div class="fixed-bottom text-right mb-4 mr-4">
 			<transition name="button">
-				<button class="btn btn-outline-dark" v-show="buttonActive" @click="returnTop">
+				<button class="btn btn-dark" v-show="buttonActive" @click="returnTop">
 					<i class="far fa-hand-point-up"></i>
 					PageTop
 				</button>
@@ -201,8 +214,18 @@ export default {
 		window.addEventListener('scroll', this.scrollWindow)
 	},
 	watch: {
-		
+		//
 	},
+    filters: {
+        truncate: function(value) {
+            const length = 150;
+            const ommision = '';
+            if (value.length <= length) {
+                return value;
+            }
+            return value.substring(0, length) + ommision;
+        }
+    },
 	computed: {
 		own() {
 			return this.$store.state.user
@@ -223,7 +246,7 @@ export default {
 			this.isLoading = true;
 			if (this.keyword != "") {
 				alert("「" + this.keyword +"」を含むものを検索しました。")
-			}
+			} 
 			const { data } = await axios.get('/api/content', {
 				params: {
 					sort: this.sort,
@@ -235,6 +258,12 @@ export default {
 			this.totalItems = data.total_items
 			this.contents = data.contents
 			this.isLoading = false
+            this.contents.forEach(element => {
+                element.moreFlag = false
+            })
+            this.responds.forEach(element => {
+                element.moreFlag = false
+            })
 
 			const api = axios.create()
 			axios.all([
@@ -250,9 +279,9 @@ export default {
 
 		onSearch() {
 			this.$store.state.barcode = ''
-      this.offset = 0
-      this.currentPage = 0
-      this.getItems()
+            this.offset = 0
+            this.currentPage = 0
+            this.getItems()
 		},
 
 		async onTagSearch(selected_tag) {
@@ -261,7 +290,7 @@ export default {
 			if (selected_tag != "") {
 				alert(selected_tag +"勉強会の投稿のみ表示します。")
 			} else {
-				alert("トップに戻ります。")
+				alert("絞り込みを解除します。")
 			}
 			const { data } = await axios.get('/api/tag', {
 				params: {
