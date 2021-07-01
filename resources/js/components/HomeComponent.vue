@@ -206,7 +206,6 @@ export default {
 				this.getItems()
 			}
 		},
-
 		async getItems () {
 			this.isLoading = true;
 			if (this.keyword != "") {
@@ -321,85 +320,61 @@ export default {
       		this.invalid = false
       		this.errorMessage = ''
       		const _this = this
-      		axios
+			axios
         		.get('/api/content/addgood/' + tweetId + '/' + mark)
-        		.then(function(resp) {})
+        		.then(function(resp) {			
+				})
         		.catch(function(resp) {
           			console.log(resp)
-        	})
-      		if (mark === 1) {
+        		})
+			if (mark === 1) {
         		this.contents[this.contents.length-Index-1].own_like_good = 1
         		this.contents[this.contents.length-Index-1].count_good += 1
 				this.contents[this.contents.length-Index-1].member_good += this.username + 'さん,'
-				this.contents[this.contents.length-Index-1].repeated_good+=1
-      		}
+				alert('いいねを押しました。')
+			}
       		if (mark === 2) {
         		this.contents[this.contents.length-Index-1].own_like_heart = 1
         		this.contents[this.contents.length-Index-1].count_heart += 1
 				this.contents[this.contents.length-Index-1].member_heart += this.username + 'さん,'
-				this.contents[this.contents.length-Index-1].repeated_heart+=1
-      		}
+				alert('ハートを押しました。')
+			}
       		if (mark === 3) {
         		this.contents[this.contents.length-Index-1].own_like_check = 1
         		this.contents[this.contents.length-Index-1].count_check += 1
 				this.contents[this.contents.length-Index-1].member_check += this.username + 'さん,'
-				this.contents[this.contents.length-Index-1].repeated_check+=1
-      		}
-			if(this.contents[this.contents.length-Index-1].repeated_good>=5||this.contents[this.contents.length-Index-1].repeated_heart>=5||this.contents[this.contents.length-Index-1].repeated_check>=5){
-				location.reload()
+				alert('チェックを押しました。')
 			}
-			setTimeout(() => {
-        		this.contents[this.contents.length-Index-1].repeated_good = 0}
-        		,5000)
-			setTimeout(() => {
-        		this.contents[this.contents.length-Index-1].repeated_heart = 0}
-        		,5000)
-			setTimeout(() => {
-        		this.contents[this.contents.length-Index-1].repeated_check = 0}
-        		,5000)
     	},
 		onDeletegood: function(Index,tweetId, mark) {
-      		const _this = this
-			this.repeated+=1
-      		axios
+			const _this = this
+			axios
         		.delete('/api/content/deletegood/' + tweetId + '/' + mark)
-        		.then(function(resp) {})
+        		.then(function(resp) {
+				})
         		.catch(function(resp) {
           			console.log(resp)
-        	})
-        	.finally(function() {
-          		//
-        	})
-      		if (mark === 1) {
+        		})
+        		.finally(function() {
+        		})
+			if (mark === 1) {
         		this.contents[this.contents.length-Index-1].own_like_good = 0
         		this.contents[this.contents.length-Index-1].count_good -= 1
 				this.contents[this.contents.length-Index-1].member_good = this.contents[this.contents.length-Index-1].member_good.replace(this.username + 'さん,','',)
-				this.contents[this.contents.length-Index-1].repeated_good+=1
+				alert('いいねを外しました。')
 			}
       		if (mark === 2) {
         		this.contents[this.contents.length-Index-1].own_like_heart = 0
         		this.contents[this.contents.length-Index-1].count_heart -= 1
 				this.contents[this.contents.length-Index-1].member_heart = this.contents[this.contents.length-Index-1].member_heart.replace(this.username + 'さん,','',)
-				this.contents[this.contents.length-Index-1].repeated_heart+=1
+				alert('ハートを外しました。')
 			}  
       		if (mark === 3) {
         		this.contents[this.contents.length-Index-1].own_like_check = 0
         		this.contents[this.contents.length-Index-1].count_check -= 1
 				this.contents[this.contents.length-Index-1].member_check = this.contents[this.contents.length-Index-1].member_check.replace(this.username + 'さん,','',)
-				this.contents[this.contents.length-Index-1].repeated_check+=1
+				alert('チェックを外しました。')
 			}
-			if(this.contents[this.contents.length-Index-1].repeated_good>=5||this.contents[this.contents.length-Index-1].repeated_heart>=5||this.contents[this.contents.length-Index-1].repeated_check>=5){
-				location.reload()
-			}
-			setTimeout(() => {
-        		this.contents[this.contents.length-Index-1].repeated_good = 0}
-        		,5000)
-			setTimeout(() => {
-        		this.contents[this.contents.length-Index-1].repeated_heart = 0}
-        		,5000)
-			setTimeout(() => {
-        		this.contents[this.contents.length-Index-1].repeated_check = 0}
-        		,5000)
     	},
 		onResume(content) {
 			this.$router.push({ 

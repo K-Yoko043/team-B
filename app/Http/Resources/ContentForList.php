@@ -33,9 +33,6 @@ class ContentForList extends JsonResource
             'member_good'=>'',
             'member_heart'=>'',
             'member_check'=>'',
-            'repeated_good'=>0,
-            'repeated_heart'=>0,
-            'repeated_check'=>0,
         ];
     }
 }
