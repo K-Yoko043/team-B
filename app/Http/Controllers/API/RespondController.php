@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\RespondForList as RespondForListResource;
+use App\Http\Resources\RespondForShow as RespondForShowResource;
 use App\Goriller;
 use App\Content;
 use App\User;
@@ -52,9 +53,9 @@ class RespondController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Respond $respond)
     {
-        //
+        return new RespondForShowResource($respond);
     }
 
     /**

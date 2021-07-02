@@ -77,7 +77,6 @@ export default {
   },
   methods: {
     getItems: function() {
-      alert(this.respondId)
       this.isLoading = true
       const api = axios.create()
       const api2 = axios.create()
