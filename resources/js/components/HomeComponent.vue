@@ -56,13 +56,6 @@
 					>
 					<i class="fas fa-pencil-alt"></i><br>投稿する</router-link
 				>
-
-				<!-- <router-link
-						:to="{ name: 'profile' }"
-						class="btn btn-outline-success btn-lg mb-3 mr-3 text-nowrap"
-						>
-						<i class="fas fa-user-edit"></i><br>Myプロフィール</router-link
-				>	 -->
 			</div>
 		</div>
 		<table class="table table-striped" v-if="contents">
@@ -82,17 +75,30 @@
 
 					<div class="card-body">
 						<h5 class="card-subtitle mb-2 text-muted">{{ content.tag }}</h5>
+						<div v-if="content.moreFlag == false">
 							<p class="card-text text-left" 
 								style="white-space: pre-wrap;"
 							>
-							{{ content.content_text }}
+							{{ content.content_text | truncate }}<span
+								@click="content.moreFlag=true; contents.splice()"
+								v-if="content.content_text.length > 100"
+								class="clickable"
+								style="color: gray;"
+								> ...続きを読む</span>
 							</p>
+						</div>
+						<div v-else>
+							<p @click="content.moreFlag=false; contents.splice()"
+								class="card-text text-left"
+								style="white-space: pre-wrap;"
+							>
+							 {{ content.content_text }}
+							</p>
+						</div>
 					</div>
+
 				<p>
 					投稿日時：{{ content.created_at }}
-				</p>
-				<p v-if="content.comment_count!==0">
-					{{ content.comment_count }}件の返信があります。
 				</p>
 				<div class="card-footer btn-group checkparent" role="group"> 
 					<button v-if="content.own_like_good === 0" class="btn btn-outline-primary checkchild1" @click="onAddgood(index,content.id, 1)">
@@ -126,28 +132,32 @@
 						<p v-if="content.count_check !== 0" class="fukidashi3">{{ content.member_check }}がチェックを押しました。</p>
           			</button>
           			<button class="btn btn-outline-info btn-sm" data-toggle="collapse" @click="onAddrespond(content.id)">
-            			<i class="far fa-lg fa-comment"></i> 返信する
+            			<i class="far fa-lg fa-comment"></i> コメントする
           			</button>
 				</div>
-				<div v-if="content.comment_visusal === true" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
-          			&#9650;返信を非表示。
-        		</div>
-        		<div v-if="content.comment_visusal === false" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
-          			&#9660;返信を表示。
-        		</div>
+
+				<div v-show="content.comment_count" class="btn-group">
+					<div v-if="content.comment_visusal === true" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
+						&#9650; 閉じる
+					</div>
+					<div v-if="content.comment_visusal === false" class="btn btn-outline-info btn-sm" @click="visual(content.comment_visusal, content.id)">
+						&#9660; {{ content.comment_count }}件の返信
+					</div>
+				</div>
+				
 				<div v-if="content.comment_visusal === true">
 					<div v-for="respond in responds" :key="respond.id">
 						<div v-if="content.id === respond.content_id">
 							<hr />
-              				<p>返信者:{{ respond.user_name }}</p>
-              				<p>本文:{{ respond.text }}</p>
-              				<div v-if="respond.user_id === userid" class="comment">
+								<p>返信者:{{ respond.user_name }}</p>
+								<p>本文:{{ respond.text }}</p>
+								<div v-if="respond.user_id === userid" class="comment">
 								<button class="btn btn-outline-warning btn-sm" @click="onEditrespond(respond.id, content.id)">
-                  					編集
-                				</button>
-                				<button class="btn btn-outline-danger btn-sm" @click="onDeleterespond(respond.id, content.id)">
-                 	 				削除
-                				</button>
+											編集
+									</button>
+									<button class="btn btn-outline-danger btn-sm" @click="onDeleterespond(respond.id, content.id)">
+										削除
+									</button>
 							</div>
 						</div>
 					</div>
@@ -184,10 +194,12 @@ export default {
 			content_text: '',
 			search: false,
 			buttonActive: false,
+			scroll: 0,
 			good_count: '',
 			keyword: '',
 			is_liked: false,
 			isLoading: false,
+
 			sort: {
 					key: 'id',
 					isAsc: true,
@@ -207,7 +219,17 @@ export default {
 		window.addEventListener('scroll', this.scrollWindow)
 	},
 	watch: {
-		
+		//
+	},
+	filters: {
+		truncate: function(value) {
+			const length = 150;
+			const ommision = '';
+			if (value.length <= length) {
+				return value;
+			}
+			return value.substring(0, length) + ommision;
+		}
 	},
 	computed: {
 		own() {
@@ -227,7 +249,7 @@ export default {
 		async getItems () {
 			this.isLoading = true;
 			if (this.keyword != "") {
-				alert("「" + this.keyword +"」を含むものを検索しました。")
+				alert("「" + this.keyword +"」を含むユーザを検索しました。")
 			}
 			const { data } = await axios.get('/api/content', {
 				params: {
@@ -238,10 +260,13 @@ export default {
 			this.content_text = data.content_text
 			this.totalItems = data.total_items
 			this.contents = data.contents
-
-			console.log(this.contents)
-
 			this.isLoading = false
+			this.contents.forEach(element => {
+				element.moreFlag = false
+			})
+			this.responds.forEach(element => {
+				element.moreFlag = false
+			})
 
 			const api = axios.create()
 			axios.all([
@@ -317,6 +342,7 @@ export default {
 				alert(selected_tag +"勉強会の投稿のみ表示します。")
 			} else {
 				alert("絞り込みを解除します。")
+				this.search = false
 			}
 			const { data } = await axios.get('/api/tag', {
 				params: {
