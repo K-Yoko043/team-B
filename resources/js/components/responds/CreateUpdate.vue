@@ -96,7 +96,7 @@ export default {
       if (this.mode === 'create') {
         this.isLoading = false
       } else {
-        axios.all([api.get('/api/respond/' + this.respondId)]).then(
+        axios.all([api.get('/api/respond/' + this.respondId )]).then(
           axios.spread((res1, res2, res3, res4) => {
             this.respond = res1.data
             this.isLoading = false
