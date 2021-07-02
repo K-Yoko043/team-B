@@ -16,6 +16,7 @@ class CreateContentsTable extends Migration
         Schema::create('contents', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedBigInteger('user_id')->nullable()->comment('投稿者');
+            $table->string('user_name')->nullable();
             $table->string('tag')->nullable()->comment('タグ');
             $table->text('content_text')->nullable()->comment('投稿内容');
             $table->longText('comments')->nullable()->comment('コメント内容');
