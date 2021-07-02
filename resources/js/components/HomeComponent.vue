@@ -48,13 +48,6 @@
 			</div>
 		</div>
 		<div class="card-body">
-			<div class="notices">
-				<h3 class="title-margin mt-3 mb-5">トップページ
-					<i class="fas fa-bell fa-1x" @click="onPush" style="float:right">
-                        <span v-if="push_count !== 0" class="count">{{ push_count }}</span>	
-					</i>
-				</h3>
-    		</div>
 			<div class="d-flex flex-wrap justify-content-center mb-2">
 				<router-link
 					:to="{ name: 'content' }"
@@ -553,8 +546,24 @@ export default {
   	font-size:16px;
 }
 .notices {
-  position: relative; /* 基準値とする */
+  position: relative; /* 基準値とする */  
+  left:750px;
 }
+@media screen and (max-width: 1024px) {	//画面幅1024px以下
+	.notices {
+  		position: relative; /* 基準値とする */  
+  		left:550px;
+	}
+}
+
+@media screen and (max-width: 850px) {	//画面幅850px以下
+	.notices {
+  		position: relative; /* 基準値とする */  
+  		left:300px;
+		background-color:red;
+	}
+}
+
 .notices span {
   position: absolute; /* 相対位置に指定 */
   top: -10px; /* 表示位置を上から-10pxの位置にする */
