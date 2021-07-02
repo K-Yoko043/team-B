@@ -40,43 +40,14 @@ class ContentController extends Controller
 	 */
 	public function index(Request $request)
 	{
-		$keyword = $request->keyword;
-		$content_text = $request->content_text;	
+		$keyword = $request->keyword;	
 
-		// $content = $this->getLink($content_text);
-
-		$rets = [];
-		if (!empty($keyword)) {
-			$keyword = str_replace('+', ' ', $keyword);
-			$keyword = str_replace('　', ' ', $keyword);
-			$keyword = str_replace('%', ' ', $keyword);
-			$keyword = preg_replace('/\s(?=\s)/', '', $keyword);
-			$keyword = trim($keyword);
-
-			if (!empty($keyword) || $keyword !== '') {
-				$keyword = mb_convert_kana($keyword, 'KV');
-				$rets = array_unique(explode(' ', $keyword));
-			}
-		} 
-
-		$content_text = Content::groupby('content_text')->pluck('content_text');
-
-		if (!empty($rets)) {
-			$contents = [];
-			foreach ($rets as $ret) {
-				// $contents = Content::where('content_text', 'like', '%'.$ret.'%')
-				// 	->get();
-				// $contents = Content::whereRaw('match (`content_text`) against (+'.$ret.' in boolean mode)');
-				$contents = Content::whereRaw("match(content_text) against(?)", $ret)
-				->get();
-				\Log::info('***********************loop***********************');
-			}
-		} else {
-			$contents = Content::all();
-		}
+		// $tag = Content::groupby('tag')->pluck('tag');
+		$contents = Content::where('user_name', 'like', '%'.$keyword.'%')->get();
+		// $contents = Content::all();
+		\Log::info($contents);
 
 		return response()->json([
-			'content_text' => $content_text,
 			'contents' => ContentForListResource::collection($contents),
 		]);
 	}
@@ -99,6 +70,7 @@ class ContentController extends Controller
 			$content->position = $position;
 
 			$content->user_id = Auth::id();
+			$content->user_name = Auth::user()->name;
 			$content->save();
 		});
 
@@ -200,13 +172,12 @@ class ContentController extends Controller
 	public function showTag(Request $request)
 	{
 		$tag = $request->tag;
-		\Log::info('tagの内容');
-		\Log::info($tag);		
 
-		// $tag = Content::groupby('tag')->pluck('tag');
-		$contents = Content::where('tag', 'like', '%'.$tag.'%')->get();
-		// $contents = Content::all();
-		\Log::info($contents);
+		if ($tag != "") {
+			$contents = Content::where('tag', 'like', '%'.$tag.'%')->get();
+		} else {
+			$contents = Content::all();
+		}
 
 		return response()->json([
 			'contents' => ContentForListResource::collection($contents),
