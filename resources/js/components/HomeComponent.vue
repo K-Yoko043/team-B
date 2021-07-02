@@ -3,7 +3,7 @@
 	<div class="card text-center mx-auto">
 		<div class="card-body">
 			<div class="form-inline">
-				<div class="form-inline" style="overflow: hidden;">
+				<div class="form-inline top" style="overflow: hidden;">
 					<div class="form-group">
 						<input class="form-control" type="text" v-model="keyword" placeholder="キーワード検索">
 					</div>
