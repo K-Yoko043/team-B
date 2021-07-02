@@ -3,7 +3,7 @@
 	<div class="card text-center mx-auto">
 		<div class="card-body">
 			<div class="form-inline">
-				<div class="form-inline" style="overflow: hidden;">
+				<div class="form-inline top" style="overflow: hidden;">
 					<div class="form-group">
 						<input class="form-control" type="text" v-model="keyword" placeholder="キーワード検索">
 					</div>
@@ -42,6 +42,11 @@
 						</a>
 					</div>
 				</div>
+				<div class="notices">
+					<i class="fas fa-bell fa-2x" @click="onPush" style="float:right">
+				  		<span v-if="push_count !== 0" class="count">{{ push_count }}</span>	
+					</i>
+    			</div>
 			</div>
 			<div class="form-group">
 				<img class="img mt-3" src="/image/logo.jpg">
@@ -56,12 +61,12 @@
 					<i class="fas fa-pencil-alt"></i><br>投稿する</router-link
 				>
 
-				<router-link
+				<!-- <router-link
 						:to="{ name: 'profile' }"
 						class="btn btn-outline-success btn-lg mb-3 mr-3 text-nowrap"
 						>
 						<i class="fas fa-user-edit"></i><br>Myプロフィール</router-link
-				>	
+				>	 -->
 			</div>
 		</div>
 		<table class="table table-striped" v-if="contents">
@@ -560,7 +565,6 @@ export default {
 	.notices {
   		position: relative; /* 基準値とする */  
   		left:300px;
-		background-color:red;
 	}
 }
 
