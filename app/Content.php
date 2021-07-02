@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Support\Facades\DB;
 
 class Content extends Model
 {
@@ -17,6 +17,7 @@ class Content extends Model
     protected $casts = [
         'content_text' => 'string',
     ];
+    
 
     /**
      * テキスト内のリンク部分を取得
@@ -49,4 +50,24 @@ class Content extends Model
         return $this->hasMany('App\Comment');
     }
 
+    // ブックマークを取得
+    public function Bookmark(){
+        return $this->hasMany('App\Bookmark');
+    }
+
+    // public function isLiked($user_id)
+    // {
+    //     return $this->likes()->where('user_id', $user_id)->exists();
+    // }
+    /**
+     * いいねを取得
+     */
+    public function likes()
+    {
+        return $this->hasMany('App\Like');
+    }
+    public function responds()
+    {
+        return $this->hasMany('App\Respond');
+    }
 }

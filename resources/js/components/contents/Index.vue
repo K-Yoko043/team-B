@@ -94,6 +94,7 @@ export default {
                 api.get('/api/content/'),
             ]).then(axios.spread((res1, res2, res3, res4) => {
                 this.contents = res1.data
+
                 this.isLoading = false
             }))
         },

@@ -69,7 +69,10 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Profile');
     }
-
+    public function notices()
+    {
+        return $this->hasMany('App\Notice');
+    }
     public function comments()
     {
         return $this->hasMany('App\Comment');

@@ -13,7 +13,7 @@ use App\Goriller;
 use App\Content;
 use App\User;
 use App\Like;
-
+use App\Bookmark;
 class ContentController extends Controller
 {
 	public function __construct()
@@ -155,7 +155,48 @@ class ContentController extends Controller
 			'result' => true,
 		]);
 	}
+	public function addgood(Request $request,$id,$mark)
+    {      
+        $like= new Like;
+        $like->content_id = $id;
+        $like->user_id = Auth::id();
+        $like->reaction_no = $mark;
+        $like->save();
+        //session()->flash('success', 'You Liked the Reply.');
+        //return redirect()->back();
+        return response()->json([
+            'result' => true,
+        ]);
+    }
+    public function deletegood(Request $request,$id,$mark)
+    {
+       $like = Like::where('content_id', $id)->where('user_id', Auth::id())->where('reaction_no',$mark)->first();
+       $like->delete();
+   
+       //session()->flash('success', 'You Unliked the Reply.');
+   
+       //return redirect()->back();
+        return response()->json([
+            'result' => true,
+        ]);
+    }
 
+	public function addbook($id){
+        $bookmark = new Bookmark;
+        $bookmark->content_id = $id;
+        $bookmark->user_id = Auth::user()->id;
+        $bookmark->save();
+        return response()->json([
+            'result' => true,
+        ]);
+    }
+    public function deletebook($id){
+        $bookmark=Bookmark::where('content_id',$id)->where('user_id',Auth::user()->id);
+        $bookmark->delete();
+        return response()->json([
+            'result' => true,
+        ]);
+    }
 	public function showTag(Request $request)
 	{
 		$tag = $request->tag;

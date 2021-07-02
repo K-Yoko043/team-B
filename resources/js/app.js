@@ -127,7 +127,12 @@ const router = new VueRouter({
 
 		// いいね
 		{ name: 'content.like', path: '/content', component: require('./components/contents/Index.vue').default},
+		//返信
+		{ name: 'respond.create', path: '/respond/create', component: require('./components/responds/CreateUpdate.vue').default,props: true,},
+		{ name: 'respond.show', path: '/respond/show/:respondId', component: require('./components/responds/CreateUpdate.vue').default,props: true,},
 
+		// ブックマーク
+        { name: 'bookmark', path:'/bookmark', component: require('./components/bookmarks/Index.vue').default},
 
 		// not found
 		{ path: '*', component: require('./components/commons/NotFoundComponent.vue').default },
