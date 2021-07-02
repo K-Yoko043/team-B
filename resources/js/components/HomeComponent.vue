@@ -147,7 +147,7 @@
                                     style="color: gray;"
                                 > ... 続きを読む</span>
                             </p>
-                            <a href="#" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
+                            <a href="#" class="font-weight-bold" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
                         </div>
                         <div v-else class="mb-5">
                             <p @click="respond.moreFlag=false; responds.splice()"
@@ -156,7 +156,7 @@
                             >
                                 {{ respond.text }}
                             </p>
-                            <a href="#" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
+                            <a href="#" class="font-weight-bold" @click="linkToOtherWindow(respond)">{{ respond.url }}</a>
                         </div>
 					</div>
 				</div>
