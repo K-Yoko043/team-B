@@ -15,9 +15,10 @@ class CreateRespondsTable extends Migration
     {
         Schema::create('responds', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('content_id')->nullable()->comment('投稿ID');
-            $table->string('text')->comment('返信内容');
-            $table->unsignedBigInteger('user_id')->nullable()->comment('返信者');
+            $table->unsignedBigInteger('content_id')->nullable();
+            $table->text('text')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->text('url')->nullable();
             $table->timestamps();
         });
     }
