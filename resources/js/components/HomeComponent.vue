@@ -50,7 +50,7 @@
 		<div class="card-body">
 			<div class="notices">
 				<h3 class="title-margin mt-3 mb-5">トップページ
-					<i class="fas fa-bell fa-1x" @click="onPush"style="float:right">
+					<i class="fas fa-bell fa-1x" @click="onPush" style="float:right">
 				  		<span v-if="push_count !== 0" class="count">{{ push_count }}</span>	
 					</i>
 				</h3>
@@ -63,12 +63,12 @@
 					<i class="fas fa-pencil-alt"></i><br>投稿する</router-link
 				>
 
-				<router-link
+				<!-- <router-link
 						:to="{ name: 'profile' }"
 						class="btn btn-outline-success btn-lg mb-3 mr-3 text-nowrap"
 						>
 						<i class="fas fa-user-edit"></i><br>Myプロフィール</router-link
-				>	
+				>	 -->
 			</div>
 		</div>
 		<table class="table table-striped" v-if="contents">
