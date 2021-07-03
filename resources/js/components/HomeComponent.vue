@@ -71,7 +71,6 @@
 				class="card bg-white border-info"
 			>
 				<h3 class="card-header">
-					<img src="/storage/1623910044.柴犬.jpg" class="img-thumbnail" alt="">
 					{{ content.user_name }}
 					<i v-if="content.user_name === own.name"
 						 class="far fa-edit clickable" @click="onResume(content)">
